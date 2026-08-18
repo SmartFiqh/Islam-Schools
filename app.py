@@ -1,4 +1,3 @@
-```python
 import streamlit as st
 import json
 import os
@@ -374,4 +373,3 @@ st.markdown("""
     <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
 </div>
 """, unsafe_allow_html=True)
-```
