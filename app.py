@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import re
 
@@ -19,8 +20,6 @@ LANG_META = {
     "ur": {"name": "اردو", "dir": "rtl", "font": "Tahoma, 'Segoe UI', sans-serif"},
 }
 LANGS = list(LANG_META.keys())
-# Languages with fully translated fiqh content. Others fall back to English content
-# (with localized navigation/UI) to avoid publishing unverified religious-ruling translations.
 CONTENT_LANGS = ["ar", "en"]
 
 # =========================================================
@@ -55,11 +54,11 @@ UI = {
                              "fa": "مذاهب اهل سنت، مذاهب شیعه، مذهب اباضی، یا آراء دیگر؟",
                              "ms": "Mazhab Sunni, Syiah, Ibadi, atau pandangan lain?",
                              "ur": "اہل سنت کے مذاہب، شیعہ مذاہب، اباضی مذہب، یا دیگر آراء؟"},
-    "step1_pick_prompt": {"ar": "اختر المذهب تحديداً:", "en": "Choose the specific madhhab:",
-                            "fr": "Choisissez l'école précise :", "fa": "مذهب مشخص را انتخاب کنید:",
-                            "ms": "Pilih mazhab khusus:", "ur": "مخصوص مذہب منتخب کریں:"},
-    "selected_madhab_caption": {"ar": "المذهب المختار:", "en": "Selected madhhab:", "fr": "École sélectionnée :",
-                                  "fa": "مذهب انتخاب‌شده:", "ms": "Mazhab dipilih:", "ur": "منتخب مذہب:"},
+    "step1_pick_prompt": {"ar": "اختر المذهب (يمكنك اختيار أكثر من واحد للمقارنة):", "en": "Select madhhab(s) for comparison:",
+                            "fr": "Sélectionnez l'école (plusieurs possibles pour comparer) :", "fa": "مذهب را انتخاب کنید (برای مقایسه می‌توانید چند مورد را برگزینید):",
+                            "ms": "Pilih mazhab (boleh pilih lebih daripada satu untuk perbandingan):", "ur": "مذہب منتخب کریں (موازنہ کے لیے ایک سے زیادہ منتخب کر سکتے ہیں):"},
+    "selected_madhab_caption": {"ar": "المذاهب المختارة:", "en": "Selected madhhabs:", "fr": "Écoles sélectionnées :",
+                                  "fa": "مذاهب انتخاب‌شده:", "ms": "Mazhab dipilih:", "ur": "منتخب مذاہب:"},
     "step2_title": {"ar": "٢. اختر الموضوع", "en": "2. Choose the Topic", "fr": "2. Choisir le thème",
                      "fa": "۲. انتخاب موضوع", "ms": "2. Pilih Topik", "ur": "۲. موضوع منتخب کریں"},
     "step2_prompt": {"ar": "العبادات، أم المعاملات، أم الأسرة، أم مواضيع أخرى؟",
@@ -94,7 +93,7 @@ UI = {
                        "fr": "Avis général unifié — pas encore détaillé par école", "fa": "نظر عمومی واحد — هنوز به‌تفکیک مذهب نیست",
                        "ms": "Pandangan umum bersatu — belum diperincikan mengikut mazhab",
                        "ur": "متفقہ عمومی رائے — ابھی تک مذہب کے لحاظ سے تفصیل نہیں دی گئی"},
-    "note_madhab": {"ar": "رأي المذهب", "en": "Opinion of the", "fr": "Avis de l'école", "fa": "نظر مذهب",
+    "note_madhab": {"ar": "رأي المذهب", "en": "Opinion of", "fr": "Avis de l'école", "fa": "نظر مذهب",
                       "ms": "Pandangan mazhab", "ur": "مذہب کی رائے"},
     "fatwa_disclaimer": {"ar": "هذا والله أعلم", "en": "And Allah knows best.", "fr": "Et Allah est plus Savant.",
                            "fa": "و الله اعلم", "ms": "Dan Allah Maha Mengetahui.", "ur": "واللہ اعلم"},
@@ -124,8 +123,6 @@ UI = {
                         "ms": "🗺️ Negara & Mazhab Rasmi", "ur": "🗺️ ممالک اور سرکاری مذہب"},
     "tab_glossary": {"ar": "📖 مصطلحات فقهية", "en": "📖 Juristic Terminology", "fr": "📖 Terminologie juridique",
                        "fa": "📖 اصطلاحات فقهی", "ms": "📖 Istilah Fiqh", "ur": "📖 فقہی اصطلاحات"},
-    "tab_comments": {"ar": "💬 التعليقات", "en": "💬 Comments", "fr": "💬 Commentaires", "fa": "💬 نظرات",
-                       "ms": "💬 Ulasan", "ur": "💬 تبصرے"},
     "birthplace_label": {"ar": "📍 مكان الميلاد", "en": "📍 Birthplace", "fr": "📍 Lieu de naissance",
                            "fa": "📍 محل تولد", "ms": "📍 Tempat Lahir", "ur": "📍 جائے پیدائش"},
     "founding_place_label": {"ar": "🏛️ مكان تأسيس المذهب", "en": "🏛️ Where the School was Founded",
@@ -140,29 +137,6 @@ UI = {
     "rating_label": {"ar": "قيّم فائدة الإجابة:", "en": "Rate the usefulness of the answer:",
                        "fr": "Évaluez l'utilité de la réponse :", "fa": "میزان مفید بودن پاسخ را ارزیابی کنید:",
                        "ms": "Nilaikan manfaat jawapan:", "ur": "جواب کی افادیت کی درجہ بندی کریں:"},
-    "comment_placeholder": {"ar": "اكتب ملاحظتك هنا...", "en": "Write your note here...",
-                              "fr": "Écrivez votre remarque ici...", "fa": "یادداشت خود را اینجا بنویسید...",
-                              "ms": "Tulis ulasan anda di sini...", "ur": "اپنا تبصرہ یہاں لکھیں..."},
-    "comment_area_label": {"ar": "تعليقك أو ملاحظتك:", "en": "Your comment or note:", "fr": "Votre commentaire :",
-                             "fa": "نظر یا یادداشت شما:", "ms": "Ulasan atau nota anda:", "ur": "آپ کا تبصرہ یا نوٹ:"},
-    "submit_comment": {"ar": "إرسال التعليق", "en": "Submit Comment", "fr": "Envoyer le commentaire",
-                         "fa": "ارسال نظر", "ms": "Hantar Ulasan", "ur": "تبصرہ بھیجیں"},
-    "comment_success": {"ar": "✅ تم إرسال تعليقك، شكراً لك.", "en": "✅ Your comment was submitted, thank you.",
-                          "fr": "✅ Votre commentaire a été envoyé, merci.", "fa": "✅ نظر شما ارسال شد، سپاسگزاریم.",
-                          "ms": "✅ Ulasan anda telah dihantar, terima kasih.", "ur": "✅ آپ کا تبصرہ موصول ہوگیا، شکریہ۔"},
-    "comment_warning": {"ar": "⚠️ الرجاء كتابة تعليق قبل الإرسال.", "en": "⚠️ Please write a comment before submitting.",
-                          "fr": "⚠️ Veuillez écrire un commentaire avant d'envoyer.",
-                          "fa": "⚠️ لطفاً پیش از ارسال نظری بنویسید.", "ms": "⚠️ Sila tulis ulasan sebelum menghantar.",
-                          "ur": "⚠️ براہ کرم بھیجنے سے پہلے تبصرہ لکھیں۔"},
-    "session_comments_title": {"ar": "تعليقات هذه الجلسة:", "en": "Comments in this session:",
-                                 "fr": "Commentaires de cette session :", "fa": "نظرات این نشست:",
-                                 "ms": "Ulasan sesi ini:", "ur": "اس نشست کے تبصرے:"},
-    "comments_note": {"ar": "ملاحظة: هذه التعليقات محفوظة لجلستك الحالية فقط. لحفظها بشكل دائم يلزم ربط البرنامج بقاعدة بيانات (مثل Firebase).",
-                        "en": "Note: these comments are kept only for your current session. Permanent storage requires connecting the app to a database (e.g. Firebase).",
-                        "fr": "Remarque : ces commentaires ne sont conservés que pour votre session actuelle. Un stockage permanent nécessite une base de données (p. ex. Firebase).",
-                        "fa": "توجه: این نظرات فقط برای نشست فعلی شما نگه‌داری می‌شوند. برای ذخیره دائمی باید برنامه به پایگاه داده (مانند Firebase) متصل شود.",
-                        "ms": "Nota: ulasan ini hanya disimpan untuk sesi semasa anda. Penyimpanan kekal memerlukan pangkalan data (cth. Firebase).",
-                        "ur": "نوٹ: یہ تبصرے صرف آپ کی موجودہ نشست کے لیے محفوظ ہیں۔ مستقل محفوظ کرنے کے لیے ڈیٹا بیس (مثلاً Firebase) سے جوڑنا ضروری ہے۔"},
     "footer_text": {"ar": "المعرفة أمانة. نراجع كل مادة من مصادرها الأصلية، ونوضح مواضع الاتفاق والاختلاف بإنصاف — هذا البرنامج لعرض آراء المذاهب للفهم والتبصر، وليس موقع إفتاء.",
                       "en": "Knowledge is a trust. Every entry is reviewed against its original sources, presenting points of agreement and difference fairly — this app is for understanding, not for issuing fatwas.",
                       "fr": "Le savoir est une responsabilité. Chaque entrée est vérifiée à partir de ses sources originales, en présentant équitablement les points d'accord et de désaccord — cette application sert à comprendre, non à émettre des fatwas.",
@@ -171,23 +145,22 @@ UI = {
                       "ur": "علم ایک امانت ہے۔ ہر مواد کو اصل مصادر سے جانچا جاتا ہے اور اتفاق و اختلاف کے نکات کو منصفانہ انداز میں پیش کیا جاتا ہے — یہ ایپ سمجھنے کے لیے ہے، فتویٰ دینے کے لیے نہیں۔"},
 }
 
-
 def t(key, lang):
     return UI.get(key, {}).get(lang, UI.get(key, {}).get("en", key))
 
-
 # =========================================================
-# MADHHAB GROUPS & NAMES
+# MADHHAB NAMES & GROUPS
 # =========================================================
 MADHHAB_NAMES = {
     "maliki": {"ar": "مالكي", "en": "Maliki", "fr": "Malikite", "fa": "مالکی", "ms": "Maliki", "ur": "مالکی"},
     "shafii": {"ar": "شافعي", "en": "Shafi'i", "fr": "Chaféite", "fa": "شافعی", "ms": "Syafie", "ur": "شافعی"},
     "hanafi": {"ar": "حنفي", "en": "Hanafi", "fr": "Hanafite", "fa": "حنفی", "ms": "Hanafi", "ur": "حنفی"},
     "hanbali": {"ar": "حنبلي", "en": "Hanbali", "fr": "Hanbalite", "fa": "حنبلی", "ms": "Hanbali", "ur": "حنبلی"},
-    "dhahiri": {"ar": "ظاهري", "en": "Dhahiri (Literalist)", "fr": "Dhâhirite", "fa": "ظاهری", "ms": "Zahiri", "ur": "ظاہری"},
+    "dhahiri": {"ar": "ظاهري", "en": "Dhahiri", "fr": "Dhâhirite", "fa": "ظاهری", "ms": "Zahiri", "ur": "ظاہری"},
     "jafari": {"ar": "جعفري", "en": "Ja'fari", "fr": "Djaafarite", "fa": "جعفری", "ms": "Jaafari", "ur": "جعفری"},
     "zaydi": {"ar": "زيدي", "en": "Zaydi", "fr": "Zaydite", "fa": "زیدی", "ms": "Zaidi", "ur": "زیدی"},
     "ibadi": {"ar": "إباضي", "en": "Ibadi", "fr": "Ibadite", "fa": "اباضی", "ms": "Ibadi", "ur": "اباضی"},
+    "other": {"ar": "أخرى", "en": "Other", "fr": "Autre", "fa": "دیگر", "ms": "Lain", "ur": "دیگر"},
 }
 
 GROUP_LABELS = {
@@ -207,7 +180,6 @@ MADHHAB_GROUPS = {
     "ibadi_group": ["ibadi"],
     "other": ["other"],
 }
-MADHHAB_NAMES["other"] = {"ar": "أخرى", "en": "Other", "fr": "Autre", "fa": "دیگر", "ms": "Lain", "ur": "دیگر"}
 
 # =========================================================
 # TOPICS
@@ -221,7 +193,7 @@ TOPICS = {
 TOPIC_ORDER = ["ibadat", "muamalat", "usra", "other"]
 
 # =========================================================
-# ISSUES DATA (fully translated for ar/en; other languages fall back to en)
+# ISSUES DATA
 # =========================================================
 ISSUES = [
     {
@@ -343,7 +315,7 @@ GLOSSARY = [
 ]
 
 # =========================================================
-# IMAMS (proper names kept transliterated for non-Arabic UI)
+# IMAMS
 # =========================================================
 IMAMS = [
     {"ar_name": "الإمام مالك بن أنس الأصبحي", "en_name": "Imam Malik ibn Anas al-Asbahi", "madhab": "maliki",
@@ -389,7 +361,7 @@ IMAMS = [
 ]
 
 # =========================================================
-# COUNTRIES
+# COUNTRIES (with flags)
 # =========================================================
 COUNTRIES = [
     {"flag": "🇸🇦", "name": {"ar": "السعودية", "en": "Saudi Arabia"}, "madhab": "hanbali", "population": "36.4M"},
@@ -398,29 +370,30 @@ COUNTRIES = [
     {"flag": "🇹🇷", "name": {"ar": "تركيا", "en": "Turkey"}, "madhab": "hanafi", "population": "87.5M"},
     {"flag": "🇮🇷", "name": {"ar": "إيران", "en": "Iran"}, "madhab": "jafari", "population": "89.8M"},
     {"flag": "🇴🇲", "name": {"ar": "عُمان", "en": "Oman"}, "madhab": "ibadi", "population": "4.7M"},
+    {"flag": "🇸🇩", "name": {"ar": "السودان", "en": "Sudan"}, "madhab": "maliki", "population": "50.4M"},
+    {"flag": "🇸🇾", "name": {"ar": "سوريا", "en": "Syria"}, "madhab": "shafii", "population": "24.2M"},
+    {"flag": "🇵🇰", "name": {"ar": "باكستان", "en": "Pakistan"}, "madhab": "hanafi", "population": "248.5M"},
+    {"flag": "🇦🇫", "name": {"ar": "أفغانستان", "en": "Afghanistan"}, "madhab": "hanafi", "population": "43.4M"},
+    {"flag": "🇲🇾", "name": {"ar": "ماليزيا", "en": "Malaysia"}, "madhab": "shafii", "population": "34.7M"},
+    {"flag": "🇮🇩", "name": {"ar": "إندونيسيا", "en": "Indonesia"}, "madhab": "shafii", "population": "281.6M"},
 ]
 
 # =========================================================
 # HELPERS
 # =========================================================
 
-
 def cl(lang):
-    """Content language: use lang if fully translated, else fall back to English."""
     return lang if lang in CONTENT_LANGS else "en"
-
 
 def madhab_name(key, lang):
     return MADHHAB_NAMES.get(key, {}).get(lang, key)
 
-
 def topic_name(key, lang):
     return TOPICS.get(key, {}).get(lang, key)
 
-
-def search_issues(query, topic_filter, selected_madhab_key, level, lang):
+def search_issues(query, topic_filter, selected_madhab_list, level, lang):
     language = cl(lang)
-    if not query:
+    if not query or not selected_madhab_list:
         return []
     q = query.strip().lower()
     matches = []
@@ -448,19 +421,37 @@ def search_issues(query, topic_filter, selected_madhab_key, level, lang):
     for issue in matches:
         tr = issue["t"].get(language, issue["t"]["en"])
         by_madhab = issue.get("by_madhab", {}).get(language, {})
-        per_madhab = by_madhab.get(selected_madhab_key)
-        if per_madhab:
-            answer = per_madhab.get(level, per_madhab.get("full"))
-            note = f"{t('note_madhab', lang)} {madhab_name(selected_madhab_key, lang)}"
-        else:
+        
+        # جمع آراء المذاهب المختارة
+        answers = []
+        for madhab_key in selected_madhab_list:
+            per_madhab = by_madhab.get(madhab_key)
+            if per_madhab:
+                answer = per_madhab.get(level, per_madhab.get("full"))
+                answers.append({
+                    "madhab": madhab_name(madhab_key, lang),
+                    "answer": answer,
+                    "note": f"{t('note_madhab', lang)} {madhab_name(madhab_key, lang)}"
+                })
+        
+        # إذا لم توجد آراء للمذاهب المختارة، استخدم الرأي العام
+        if not answers:
             answer = tr.get(level, tr["full"])
-            note = t("note_general", lang)
-        results.append({"title": tr["title"], "topic": topic_name(issue["topic"], lang), "answer": answer, "note": note})
+            answers.append({
+                "madhab": t("note_general", lang),
+                "answer": answer,
+                "note": t("note_general", lang)
+            })
+        
+        results.append({
+            "title": tr["title"],
+            "topic": topic_name(issue["topic"], lang),
+            "answers": answers
+        })
     return results
 
-
 # =========================================================
-# LANGUAGE SELECTOR (top of page, always LTR-safe control)
+# LANGUAGE SELECTOR
 # =========================================================
 if "lang" not in st.session_state:
     st.session_state.lang = "ar"
@@ -480,7 +471,7 @@ DIR = meta["dir"]
 FONT = meta["font"]
 
 # =========================================================
-# GLOBAL STYLE (direction-aware; title always centered)
+# GLOBAL STYLE
 # =========================================================
 st.markdown(
     f"""
@@ -488,8 +479,6 @@ st.markdown(
     .stApp, .stApp * {{
         direction: {DIR};
         font-family: {FONT};
-    }}
-    .stApp p, .stApp li, .stApp label, .stApp span, .stApp div {{
         text-align: {"right" if DIR == "rtl" else "left"};
     }}
     .main-title-block {{
@@ -507,13 +496,60 @@ st.markdown(
     .stButton button {{
         width: 100%;
     }}
+    .fatwa-signature {{
+        font-family: 'Traditional Arabic', 'Amiri', serif;
+        font-size: 0.85rem;
+        color: #8B7355;
+        font-style: italic;
+        margin-top: 4px;
+    }}
+    .star-rating {{
+        color: #FFD700;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }}
+    .star-rating:hover {{
+        transform: scale(1.1);
+    }}
+    .result-card {{
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border-right: 4px solid #d4a854;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }}
+    .answer-text {{
+        font-size: 1.05rem;
+        line-height: 1.8;
+        padding: 8px 0;
+    }}
+    .comparison-grid {{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+        margin: 8px 0;
+    }}
+    .madhab-answer {{
+        background: white;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+    }}
+    .madhab-name {{
+        font-weight: bold;
+        color: #1e3a2f;
+        border-bottom: 2px solid #d4a854;
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+    }}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # =========================================================
-# HEADER — main title centered regardless of language direction
+# HEADER
 # =========================================================
 st.markdown(
     f"""
@@ -529,7 +565,7 @@ if lang not in CONTENT_LANGS and t("content_fallback_note", lang):
     st.info(t("content_fallback_note", lang))
 
 # =========================================================
-# SECTION 1 — SEARCH (cumulative sub-parts within one expander)
+# SEARCH SECTION
 # =========================================================
 with st.expander(t("search_section_title", lang), expanded=True):
 
@@ -545,17 +581,18 @@ with st.expander(t("search_section_title", lang), expanded=True):
     )
 
     sub_options = MADHHAB_GROUPS[madhab_group]
-    if len(sub_options) > 1:
-        selected_madhab = st.radio(
-            t("step1_pick_prompt", lang),
-            sub_options,
-            format_func=lambda k: madhab_name(k, lang),
-            horizontal=True,
-            key="madhab_pick",
-        )
+    selected_madhab_list = st.multiselect(
+        t("step1_pick_prompt", lang),
+        sub_options,
+        default=sub_options[:1] if sub_options else [],
+        format_func=lambda k: madhab_name(k, lang),
+        key="madhab_multiselect",
+    )
+
+    if selected_madhab_list:
+        st.caption(f"{t('selected_madhab_caption', lang)} {', '.join(madhab_name(m, lang) for m in selected_madhab_list)}")
     else:
-        selected_madhab = sub_options[0]
-        st.caption(f"{t('selected_madhab_caption', lang)} **{madhab_name(selected_madhab, lang)}**")
+        st.warning("⚠️ الرجاء اختيار مذهب واحد على الأقل.")
 
     st.markdown("---")
     st.markdown(f"#### {t('step2_title', lang)}")
@@ -594,29 +631,53 @@ with st.expander(t("search_section_title", lang), expanded=True):
 
     st.markdown("---")
     st.markdown(f"#### {t('step5_title', lang)}")
-    if search_clicked and question:
-        results = search_issues(question, topic, selected_madhab, level, lang)
+    if search_clicked and question and selected_madhab_list:
+        results = search_issues(question, topic, selected_madhab_list, level, lang)
         if results:
             for r in results:
-                with st.container(border=True):
-                    st.markdown(f"**📌 {r['title']}** &nbsp;·&nbsp; _{r['topic']}_")
-                    st.markdown(f"### {r['answer']}")
-                    st.caption(r["note"])
-                    st.caption(t("fatwa_disclaimer", lang))
+                st.markdown(f"""
+                <div class="result-card">
+                    <h4 style="margin:0; color:#1e3a2f;">📌 {r['title']}</h4>
+                    <p style="color:#6a7f78; font-size:0.9rem; margin:2px 0 8px 0;">{r['topic']}</p>
+                """, unsafe_allow_html=True)
+                
+                if len(r['answers']) > 1:
+                    st.markdown('<div class="comparison-grid">', unsafe_allow_html=True)
+                    for ans in r['answers']:
+                        st.markdown(f"""
+                        <div class="madhab-answer">
+                            <div class="madhab-name">{ans['madhab']}</div>
+                            <div class="answer-text">{ans['answer']}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                else:
+                    ans = r['answers'][0]
+                    st.markdown(f"""
+                    <div class="answer-text">{ans['answer']}</div>
+                    <div style="color:#8B7355; font-size:0.85rem; margin-top:4px;">{ans['note']}</div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown(f"""
+                    <div class="fatwa-signature">{t('fatwa_disclaimer', lang)}</div>
+                </div>
+                """, unsafe_allow_html=True)
         else:
             st.warning(t("no_results", lang))
-    elif search_clicked:
+    elif search_clicked and not selected_madhab_list:
+        st.warning("⚠️ الرجاء اختيار مذهب واحد على الأقل للمقارنة.")
+    elif search_clicked and not question:
         st.info(t("empty_question", lang))
     else:
         st.caption(t("empty_placeholder", lang))
 
 # =========================================================
-# SECTION 2 — RESOURCES (cumulative sub-parts as tabs inside one expander)
+# RESOURCES SECTION
 # =========================================================
 with st.expander(t("resources_section_title", lang), expanded=False):
 
-    tab_imams, tab_countries, tab_glossary, tab_comments = st.tabs(
-        [t("tab_imams", lang), t("tab_countries", lang), t("tab_glossary", lang), t("tab_comments", lang)]
+    tab_imams, tab_countries, tab_glossary = st.tabs(
+        [t("tab_imams", lang), t("tab_countries", lang), t("tab_glossary", lang)]
     )
 
     with tab_imams:
@@ -670,24 +731,27 @@ with st.expander(t("resources_section_title", lang), expanded=False):
                 unsafe_allow_html=True,
             )
 
-    with tab_comments:
-        if "session_comments" not in st.session_state:
-            st.session_state.session_comments = []
+# =========================================================
+# RATING SECTION (Star Rating)
+# =========================================================
+st.markdown("---")
+st.markdown(f"#### {t('rating_label', lang)}")
 
-        rating = st.slider(t("rating_label", lang), 1, 5, 5)
-        comment_text = st.text_area(t("comment_area_label", lang), placeholder=t("comment_placeholder", lang))
-        if st.button(t("submit_comment", lang)):
-            if comment_text.strip():
-                st.session_state.session_comments.append({"text": comment_text.strip(), "rating": rating})
-                st.success(t("comment_success", lang))
-            else:
-                st.warning(t("comment_warning", lang))
+# Star rating using session state
+if "rating_value" not in st.session_state:
+    st.session_state.rating_value = 0
 
-        if st.session_state.session_comments:
-            st.markdown(f"**{t('session_comments_title', lang)}**")
-            for c in st.session_state.session_comments:
-                st.markdown(f"- {'⭐' * c['rating']} — {c['text']}")
-        st.caption(t("comments_note", lang))
+cols = st.columns(5)
+for i in range(1, 6):
+    with cols[i-1]:
+        if st.button("⭐" if i <= st.session_state.rating_value else "☆", key=f"star_{i}", use_container_width=True):
+            st.session_state.rating_value = i
+            st.rerun()
+
+if st.session_state.rating_value > 0:
+    st.caption(f"تقييمك: {'⭐' * st.session_state.rating_value} ({st.session_state.rating_value}/5)")
+else:
+    st.caption("اضغط على النجمة لتقييم الإجابة")
 
 # =========================================================
 # FOOTER
@@ -701,3 +765,4 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+```
