@@ -8,10 +8,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# ============================================================
-# البيانات
-# ============================================================
-
 issues_data = [
     {
         "id": 1,
@@ -108,28 +104,19 @@ imams_data = [
     {"name": "الإمام جابر بن زيد (القرن الأول-93هـ)", "school": "المذهب الإباضي", "scholars": "أبو سعيد الكدمي، أبو نزار الخروصي، نور الدين السالمي، الشيخ أحمد الخليلي"}
 ]
 
-# ============================================================
-# دالة البحث الذكي
-# ============================================================
-
 def smart_search(query, issues_data, category_filter, level='full'):
     if not query:
         return []
-    
     query = query.strip().lower()
     results = []
-    
     for issue in issues_data:
         if category_filter != "الكل" and issue.get('category', '') != category_filter:
             continue
-            
         title_match = query in issue.get('title', '').lower()
         keyword_match = any(query in kw.lower() for kw in issue.get('keywords', []))
         full_text_match = query in issue.get('rulings', {}).get('full', '').lower()
-        
         if title_match or keyword_match or full_text_match:
             results.append(issue)
-    
     if not results:
         query_words = re.findall(r'\w+', query)
         for issue in issues_data:
@@ -140,7 +127,6 @@ def smart_search(query, issues_data, category_filter, level='full'):
                 if word in issue_text:
                     results.append(issue)
                     break
-    
     final_results = []
     for issue in results:
         rulings = issue.get('rulings', {})
@@ -150,12 +136,7 @@ def smart_search(query, issues_data, category_filter, level='full'):
             'category': issue.get('category'),
             'answer': answer
         })
-    
     return final_results
-
-# ============================================================
-# واجهة المستخدم
-# ============================================================
 
 st.markdown("""
 <div style="text-align: center; padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 30px; direction: rtl;">
@@ -169,12 +150,12 @@ st.markdown('<div style="direction: rtl;">', unsafe_allow_html=True)
 
 st.markdown("### 🔍 خطوات البحث")
 
-category_filter = st.radio("١. اختر المجال الفقهي:", ["الكل", "العبادات", "المعاملات"], horizontal=True)
+category_filter = st.radio("١. اختر المجال الفقهي:", ["الكل", "العبادات", "المعاملات", "الأسرة", "الحياة اليومية"], horizontal=True)
 
-st.multiselect("٢. اختر المذاهب:", ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الجعفري"], default=["المالكي", "الشافعي"])
+madhabs = st.multiselect("٢. اختر المذاهب التي تريد عرضها:", ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الظاهري", "الجعفري", "الزيدي", "الإباضي", "رأي آخر"], default=["المالكي", "الشافعي", "الحنبلي", "الحنفي"])
 
-answer_level = st.radio("٣. اختر مستوى الإجابة:", ["⚡ مختصرة جداً", "📄 مختصرة", "📚 كاملة"], horizontal=True)
-level_map = {"⚡ مختصرة جداً": "very_short", "📄 مختصرة": "short", "📚 كاملة": "full"}
+answer_level = st.radio("٣. اختر مستوى الإجابة:", ["⚡ مختصرة جداً (كلمة واحدة)", "📄 مختصرة (سطر واحد)", "📚 كاملة (تفصيلية)"], horizontal=True)
+level_map = {"⚡ مختصرة جداً (كلمة واحدة)": "very_short", "📄 مختصرة (سطر واحد)": "short", "📚 كاملة (تفصيلية)": "full"}
 
 search_query = st.text_input("٤. اكتب سؤالك:", placeholder="مثال: ما حكم صلاة المسافر؟")
 
@@ -187,44 +168,81 @@ if st.button("🔍 ابحث", use_container_width=True) and search_query:
                 st.markdown(f"**الإجابة:** {r['answer']}")
                 st.markdown("*هذا والله أعلم*")
     else:
-        st.warning("لم نجد نتيجة. غيّر الفلتر أو أعد الصياغة.")
+        st.warning("🔍 لم نجد مسألة بهذا الوصف في المجال والمذاهب المختارة. جرّب تغيير الفلتر أو كلمة أقصر.")
 
 st.markdown("---")
 st.markdown("### ✦ كل الموضوعات")
 cols = st.columns(4)
 for i, cat in enumerate(["☽ العبادات", "◈ المعاملات", "⌂ الأسرة", "✧ الحياة اليومية"]):
     with cols[i]:
-        st.button(cat, use_container_width=True)
+        if st.button(cat, use_container_width=True):
+            category_name = cat.replace("☽ ", "").replace("◈ ", "").replace("⌂ ", "").replace("✧ ", "")
+            st.info(f"📂 عرض مسائل {category_name}")
 
 st.markdown("---")
-with st.expander("🗺️ خريطة الآراء", expanded=True):
-    st.button("المالكي"); st.button("الشافعي"); st.button("الحنبلي"); st.button("الحنفي"); st.button("الظاهري")
-    st.button("الجعفري"); st.button("الزيدي"); st.button("الإباضي"); st.button("رأي آخر")
+st.markdown("### 🗺️ خريطة الآراء")
+
+with st.expander("المذاهب السنية", expanded=True):
+    cols = st.columns(5)
+    sunni_schools = ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الظاهري"]
+    for i, school in enumerate(sunni_schools):
+        with cols[i]:
+            if st.button(school, use_container_width=True):
+                st.info(f"🗺️ تم اختيار المذهب: {school}")
+
+with st.expander("المذاهب الشيعية", expanded=True):
+    cols = st.columns(2)
+    shia_schools = ["الجعفري الاثنا عشري", "الزيدي"]
+    for i, school in enumerate(shia_schools):
+        with cols[i]:
+            if st.button(school, use_container_width=True):
+                st.info(f"🗺️ تم اختيار المذهب: {school}")
+
+with st.expander("المذهب الإباضي", expanded=True):
+    if st.button("الإباضي", use_container_width=True):
+        st.info("🗺️ تم اختيار المذهب: الإباضي")
+
+if st.button("رأي آخر", use_container_width=True):
+    st.info("🗺️ تم اختيار: رأي آخر")
 
 with st.expander("📜 الأئمة المؤسسون", expanded=False):
     for imam in imams_data:
         st.markdown(f"""
-        <div style="background: #f5f7f5; padding: 12px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #d4a854;">
-            <b>{imam['name']}</b><br>
-            <span style="color: #d4a854;">{imam['school']}</span><br>
-            <span style="font-size: 0.9rem;">أشهر العلماء: {imam['scholars']}</span>
+        <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #d4a854; direction: rtl;">
+            <h4 style="margin: 0; color: #1e3a2f;">{imam['name']}</h4>
+            <p style="margin: 2px 0; color: #d4a854; font-weight: 600;">{imam['school']}</p>
+            <p style="margin: 4px 0 0 0; color: #3d4f5f;">أشهر العلماء: {imam['scholars']}</p>
         </div>
         """, unsafe_allow_html=True)
 
 with st.expander("🗺️ المذهب الرسمي السائد في الدول الإسلامية", expanded=False):
-    for country in countries_data:
-        st.markdown(f"- {country['country']}: **{country['madhab']}** (👥 {country['population']})")
+    cols = st.columns(3)
+    for i, country in enumerate(countries_data):
+        with cols[i % 3]:
+            st.markdown(f"""
+            <div style="background: #f5f7f5; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border-right: 3px solid #d4a854; direction: rtl;">
+                <strong>{country['country']}</strong><br>
+                <span style="color: #d4a854;">{country['madhab']}</span><br>
+                <span style="font-size: 0.8rem; color: #6a7f78;">👥 {country['population']}</span>
+            </div>
+            """, unsafe_allow_html=True)
 
 with st.expander("📚 قاموس المصطلحات الفقهية", expanded=False):
     for term in glossary_terms:
-        st.markdown(f"**{term['term']}**: {term['definition']}")
+        st.markdown(f"""
+        <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #1e3a2f; direction: rtl;">
+            <h4 style="margin: 0; color: #1e3a2f;">{term['term']}</h4>
+            <p style="margin: 4px 0 0 0; color: #3d4f5f;">{term['definition']}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("""
 <div style="text-align: center; padding: 20px 0; color: #6a7f78; direction: rtl;">
     <p>المعرفة أمانة. نراجع كل مادة من مصادرها الأصلية، ونوضح مواضع الاتفاق والاختلاف بإنصاف.</p>
-    <p style="font-size: 0.8rem;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
+    <a href="#" style="color: #8bc4b0; text-decoration: none; font-weight: 600;">تعرّف على منهجيتنا →</a>
+    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
 </div>
 """, unsafe_allow_html=True)
 ```
