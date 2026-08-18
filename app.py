@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import json
 import os
@@ -97,6 +98,17 @@ def get_default_issues():
                 "full": "التيمم هو بديل عن الوضوء والغسل عند عدم وجود الماء، أو لمرض يمنع استعماله. يُمسح التراب على الوجه والكفين، وهو رخصة من الله للتيسير على عباده."
             },
             "keywords": ["تيمم", "ماء", "تراب", "وضوء", "غسل", "رخصة", "مرض", "التيمم"]
+        },
+        {
+            "id": 8,
+            "title": "صلاة المسافر",
+            "category": "العبادات",
+            "rulings": {
+                "very_short": "جائز",
+                "short": "يجوز للمسافر قصر الصلاة وجمعها",
+                "full": "يجوز للمسافر قصر الصلاة الرباعية (الظهر، العصر، العشاء) إلى ركعتين، وجمع الصلاة (الظهر مع العصر، والمغرب مع العشاء). هذه رخصة من الله للتخفيف على المسافرين."
+            },
+            "keywords": ["سفر", "مسافر", "صلاة", "قصر", "جمع", "تخفيف", "رخصة", "المسافر"]
         }
     ]
 
@@ -148,8 +160,8 @@ imams_data = get_default_imams()
 # 4. الذكاء الاصطناعي لفهم الأسئلة
 # ============================================================
 
-def smart_search(query, issues_data, level='full'):
-    """بحث ذكي يفهم الأسئلة بأسلوب ركيك ويعطي أقرب إجابة"""
+def smart_search(query, issues_data, category_filter, madhab_filter, level='full'):
+    """بحث ذكي يفهم الأسئلة بأسلوب ركيك ويعطي أقرب إجابة مع فلترة حسب المجال والمذهب"""
     if not query:
         return []
     
@@ -158,6 +170,10 @@ def smart_search(query, issues_data, level='full'):
     
     # 1. البحث المباشر في العناوين والكلمات المفتاحية
     for issue in issues_data:
+        # تطبيق فلتر المجال
+        if category_filter != "الكل" and issue.get('category', '') != category_filter:
+            continue
+            
         title_match = query in issue.get('title', '').lower()
         keyword_match = any(query in kw.lower() for kw in issue.get('keywords', []))
         full_text_match = query in issue.get('rulings', {}).get('full', '').lower()
@@ -167,38 +183,39 @@ def smart_search(query, issues_data, level='full'):
     
     # 2. إذا لم يجد، استخدم خوارزمية التشابه (مطابقة الكلمات)
     if not results:
-        all_keywords = []
-        for issue in issues_data:
-            issue_keywords = issue.get('keywords', []) + [issue.get('title', '')]
-            all_keywords.extend(issue_keywords)
-        
-        # تقسيم الاستعلام إلى كلمات
         query_words = re.findall(r'\w+', query)
         
         for issue in issues_data:
+            if category_filter != "الكل" and issue.get('category', '') != category_filter:
+                continue
+                
             issue_text = issue.get('title', '').lower() + ' ' + ' '.join(issue.get('keywords', [])).lower()
             for word in query_words:
                 if word in issue_text:
                     results.append(issue)
                     break
     
-    # 3. إذا لم يجد، استخدم البحث بالمرادفات (محاكاة بسيطة)
+    # 3. إذا لم يجد، استخدم البحث بالمرادفات
     if not results:
         synonyms = {
-            "صلاة": ["صلات", "الصلاة", "صلي", "يصلي"],
+            "صلاة": ["صلات", "الصلاة", "صلي", "يصلي", "صليت", "يصلي"],
             "زكاة": ["زكاه", "الزكاة", "زكي", "يزكي"],
-            "سفر": ["السفر", "مسافر", "سافرة"],
-            "وضوء": ["الوضوء", "وضوئ", "يتوضأ"],
+            "سفر": ["السفر", "مسافر", "سافرة", "سافرت"],
+            "وضوء": ["الوضوء", "وضوئ", "يتوضأ", "توضأ"],
             "ربا": ["الربا", "ربوي", "فوائد", "فائدة"],
-            "جماعة": ["الجماعة", "جماعه", "الجماعه"],
+            "جماعة": ["الجماعة", "جماعه", "الجماعه", "جماعي"],
             "نقاب": ["النقاب", "حجاب", "وجه", "مرأة"],
-            "تيمم": ["التيمم", "تراب", "صعيد"]
+            "تيمم": ["التيمم", "تراب", "صعيد"],
+            "نكاح": ["النكاح", "زواج", "تزوج"],
+            "بيع": ["البيع", "شريت", "اشتريت"]
         }
         
         for word in query_words:
             for synonym_key, synonym_list in synonyms.items():
                 if word in synonym_list:
                     for issue in issues_data:
+                        if category_filter != "الكل" and issue.get('category', '') != category_filter:
+                            continue
                         if synonym_key in issue.get('title', '').lower() or any(synonym_key in kw.lower() for kw in issue.get('keywords', [])):
                             if issue not in results:
                                 results.append(issue)
@@ -232,20 +249,32 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================================
-# 6. البحث الذكي
+# 6. خيارات المستخدم (التدرج في البحث)
 # ============================================================
 
-st.markdown("### ❓ ماذا تريد أن تعرف اليوم؟")
+st.markdown("---")
+st.markdown("### 🔍 خطوات البحث")
 
-col1, col2 = st.columns([4, 1])
-with col1:
-    search_query = st.text_input("", placeholder="اسأل بأي طريقة... سيفهمك التطبيق", label_visibility="collapsed")
-with col2:
-    search_btn = st.button("🔍", use_container_width=True)
+# الخطوة 1: اختيار المجال
+st.markdown("#### ١. اختر المجال الفقهي:")
+category_filter = st.radio(
+    "",
+    ["الكل", "العبادات", "المعاملات", "الأسرة", "الحياة اليومية"],
+    horizontal=True
+)
 
-# مستوى الإجابة
+# الخطوة 2: اختيار المذاهب
+st.markdown("#### ٢. اختر المذاهب التي تريد عرضها:")
+madhabs = st.multiselect(
+    "",
+    ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الظاهري", "الجعفري", "الزيدي", "الإباضي", "رأي آخر"],
+    default=["المالكي", "الشافعي", "الحنبلي", "الحنفي"]
+)
+
+# الخطوة 3: اختيار طريقة الإجابة
+st.markdown("#### ٣. اختر مستوى الإجابة:")
 answer_level = st.radio(
-    "📝 اختر مستوى الإجابة:",
+    "",
     ["⚡ مختصرة جداً (كلمة واحدة)", "📄 مختصرة (سطر واحد)", "📚 كاملة (تفصيلية)"],
     horizontal=True
 )
@@ -258,26 +287,41 @@ level_map = {
 selected_level = level_map[answer_level]
 
 # ============================================================
-# 7. عرض النتائج
+# 7. كتابة السؤال
+# ============================================================
+
+st.markdown("---")
+st.markdown("#### ٤. اكتب سؤالك:")
+
+col1, col2 = st.columns([4, 1])
+with col1:
+    search_query = st.text_input("", placeholder="اكتب سؤالك هنا...", label_visibility="collapsed")
+with col2:
+    search_btn = st.button("🔍 ابحث", use_container_width=True)
+
+# ============================================================
+# 8. عرض النتائج
 # ============================================================
 
 if search_query or search_btn:
     query = search_query.strip()
     if query:
-        results = smart_search(query, issues_data, selected_level)
+        with st.spinner("🧠 جاري البحث والتحليل..."):
+            results = smart_search(query, issues_data, category_filter, madhabs, selected_level)
         
         if results:
             st.markdown(f"### 📊 النتائج ({len(results)} مسألة)")
             for issue in results:
                 with st.expander(f"📌 {issue['title']} ({issue['category']})"):
                     st.markdown(f"**الإجابة:** {issue['answer']}")
+                    st.markdown("*هذا والله أعلم*")
         else:
-            st.warning("🔍 لم نجد مسألة بهذا الوصف. جرّب كلمة أقصر أو اختر موضوعاً آخر.")
+            st.warning("🔍 لم نجد مسألة بهذا الوصف في المجال والمذاهب المختارة. جرّب تغيير الفلتر أو كلمة أقصر.")
     else:
-        st.info("🔍 اكتب سؤالك في الأعلى للحصول على إجابة")
+        st.info("✍️ اكتب سؤالك في الأعلى للحصول على إجابة")
 
 # ============================================================
-# 8. الموضوعات
+# 9. الموضوعات
 # ============================================================
 
 st.markdown("---")
@@ -292,7 +336,7 @@ for i, cat in enumerate(categories):
             st.info(f"📂 عرض مسائل {category_name}")
 
 # ============================================================
-# 9. خريطة الآراء (المذاهب)
+# 10. خريطة الآراء (المذاهب)
 # ============================================================
 
 st.markdown("---")
@@ -318,7 +362,7 @@ with st.expander("المذهب الإباضي", expanded=True):
 st.button("رأي آخر", use_container_width=True)
 
 # ============================================================
-# 10. الأئمة المؤسسون
+# 11. الأئمة المؤسسون
 # ============================================================
 
 st.markdown("---")
@@ -333,7 +377,7 @@ with st.expander("📜 الأئمة المؤسسون", expanded=False):
         """, unsafe_allow_html=True)
 
 # ============================================================
-# 11. الدول والمذاهب الرسمية
+# 12. الدول والمذاهب الرسمية
 # ============================================================
 
 with st.expander("🗺️ المذهب الرسمي السائد في الدول الإسلامية", expanded=False):
@@ -349,7 +393,7 @@ with st.expander("🗺️ المذهب الرسمي السائد في الدول
             """, unsafe_allow_html=True)
 
 # ============================================================
-# 12. قاموس المصطلحات
+# 13. قاموس المصطلحات
 # ============================================================
 
 with st.expander("📚 قاموس المصطلحات الفقهية", expanded=False):
@@ -362,7 +406,7 @@ with st.expander("📚 قاموس المصطلحات الفقهية", expanded=F
         """, unsafe_allow_html=True)
 
 # ============================================================
-# 13. التذييل
+# 14. التذييل
 # ============================================================
 
 st.markdown("---")
@@ -373,3 +417,4 @@ st.markdown("""
     <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
 </div>
 """, unsafe_allow_html=True)
+```
