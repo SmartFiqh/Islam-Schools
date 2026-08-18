@@ -2,7 +2,7 @@ import streamlit as st
 import re
 
 st.set_page_config(
-    page_title="الجامع المرشد للآراء الفقهية",
+    page_title="الجمع المرشد لآراء الفقه الإسلامي",
     page_icon="📖",
     layout="wide"
 )
@@ -139,7 +139,7 @@ def smart_search(query, issues_data, category_filter, level='full'):
 
 st.markdown("""
 <div style="text-align: center; padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 30px; direction: rtl;">
-    <h1 style="font-size: 2.5rem; margin: 0;">📖 الجامع المرشد للآراء الفقهية</h1>
+    <h1 style="font-size: 2.5rem; margin: 0;">📖 الجمع المرشد لآراء الفقه الإسلامي</h1>
     <p style="font-size: 1.2rem; color: #d6e4de; margin: 0;">مرشد الآراء الفقهية</p>
     <p style="font-size: 0.95rem; color: #b2d1c4; margin: 0;">للفهم والتبصر، لا لإصدار الفتاوى</p>
 </div>
@@ -241,6 +241,6 @@ st.markdown("""
 <div style="text-align: center; padding: 20px 0; color: #6a7f78; direction: rtl;">
     <p>المعرفة أمانة. نراجع كل مادة من مصادرها الأصلية، ونوضح مواضع الاتفاق والاختلاف بإنصاف.</p>
     <a href="#" style="color: #8bc4b0; text-decoration: none; font-weight: 600;">تعرّف على منهجيتنا →</a>
-    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
+    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجمع المرشد لآراء الفقه الإسلامي</p>
 </div>
 """, unsafe_allow_html=True)
