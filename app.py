@@ -1,11 +1,16 @@
+```python
 import streamlit as st
 import re
 
 st.set_page_config(
-    page_title="الجمع المرشد لآراء الفقه الإسلامي",
+    page_title="الجامع المختصر لآراء المذاهب",
     page_icon="📖",
     layout="wide"
 )
+
+# ============================================================
+# البيانات
+# ============================================================
 
 issues_data = [
     {
@@ -76,32 +81,57 @@ issues_data = [
     }
 ]
 
+# ============================================================
+# بيانات المذاهب
+# ============================================================
+
+madhhab_data = {
+    "المالكي": {"imam": "الإمام مالك بن أنس (93-179هـ)", "birth": "المدينة المنورة", "foundation": "المدينة المنورة", "life": "93-179هـ", "scholars": "ابن القاسم، سحنون، ابن رشد، القرافي، خليل بن إسحاق"},
+    "الشافعي": {"imam": "الإمام محمد بن إدريس الشافعي (150-204هـ)", "birth": "غزة", "foundation": "مصر", "life": "150-204هـ", "scholars": "المزني، البويطي، النووي، ابن حجر الهيتمي، الرافعي"},
+    "الحنبلي": {"imam": "الإمام أحمد بن حنبل (164-241هـ)", "birth": "بغداد", "foundation": "بغداد", "life": "164-241هـ", "scholars": "أبو بكر الخلال، ابن قدامة، ابن تيمية، ابن القيم، محمد بن عبد الوهاب"},
+    "الحنفي": {"imam": "الإمام أبو حنيفة النعمان (80-150هـ)", "birth": "الكوفة", "foundation": "الكوفة", "life": "80-150هـ", "scholars": "أبو يوسف، محمد بن الحسن الشيباني، الطحاوي، الكاساني، ابن عابدين"},
+    "الظاهري": {"imam": "الإمام داود الظاهري (202-270هـ)", "birth": "الكوفة", "foundation": "بغداد", "life": "202-270هـ", "scholars": "ابن حزم الأندلسي، عبد الله بن محمد القيرواني"},
+    "الجعفري": {"imam": "الإمام جعفر الصادق (80-148هـ)", "birth": "المدينة المنورة", "foundation": "المدينة المنورة", "life": "80-148هـ", "scholars": "الشيخ المفيد، الشريف المرتضى، الشيخ الطوسي، المحقق الحلي، السيد الخميني، السيد السيستاني"},
+    "الزيدي": {"imam": "الإمام زيد بن علي (80-122هـ)", "birth": "المدينة المنورة", "foundation": "الكوفة", "life": "80-122هـ", "scholars": "أبو خالد الواسطي، الناصر الأطروش، الهادي يحيى بن الحسين، الإمام المنصور بالله"},
+    "الإباضي": {"imam": "الإمام جابر بن زيد (القرن الأول-93هـ)", "birth": "عُمان", "foundation": "عُمان", "life": "القرن الأول-93هـ", "scholars": "أبو سعيد الكدمي، أبو نزار الخروصي، نور الدين السالمي، الشيخ أحمد الخليلي"}
+}
+
+# ============================================================
+# بيانات المصطلحات
+# ============================================================
+
 glossary_terms = [
-    {"term": "الحلال", "definition": "ما أحله الله ورسوله، وثبوت حله في الكتاب والسنة، وفعله مباح لا إثم فيه."},
-    {"term": "الحرام", "definition": "ما حرمه الله ورسوله بنص قطعي، وفاعله آثم مستحق للعقاب."},
-    {"term": "المكروه", "definition": "ما طلب الشارع تركه طلباً غير جازم، ويثاب تاركه ولا يعاقب فاعله."},
-    {"term": "المستحب", "definition": "ما رغب الشارع في فعله دون إلزام، ويثاب فاعله ولا يعاقب تاركه."},
-    {"term": "الفرض", "definition": "ما طلب الشارع فعله طلباً جازماً على كل مكلف، ويثاب فاعله ويعاقب تاركه."}
+    {"term": "فرض العين", "definition": "ما طلب الشارع فعله طلباً جازماً على كل مكلف شخصياً، ويثاب فاعله ويعاقب تاركه. مثل: الصلوات الخمس."},
+    {"term": "فرض الكفاية", "definition": "ما طلب الشارع فعله طلباً جازماً على عموم المكلفين، ويسقط عن الجميع بفعل البعض، ويأثم الجميع إن تركه الكل. مثل: صلاة الجنازة."},
+    {"term": "الواجب", "definition": "عند الحنفية: ما ثبت بدليل ظني (كصلاة الوتر). عند الجمهور: مرادف للفرض."},
+    {"term": "السنة المؤكدة", "definition": "ما واظب النبي ﷺ على فعله في الغالب، وتركه أحياناً، وتركها مكروه عند الحنفية. مثل: سنة الفجر."},
+    {"term": "السنة (غير المؤكدة)", "definition": "ما فعله النبي ﷺ أحياناً وتركه أحياناً، وتركها لا إثم فيه. مثل: سنة الظهر القبلية."},
+    {"term": "المستحب (مندوب)", "definition": "ما رغب الشارع في فعله دون إلزام، ويثاب فاعله ولا يعاقب تاركه. مثل: صلاة الضحى."},
+    {"term": "المندوب", "definition": "مرادف للمستحب، وهو ما ندب الشرع إليه وحث عليه دون إيجاب. مثل: الأضحية."},
+    {"term": "المكروه", "definition": "ما طلب الشارع تركه طلباً غير جازم، ويثاب تاركه ولا يعاقب فاعله. مثل: الأكل بالشمال."},
+    {"term": "الحرام", "definition": "ما حرمه الله ورسوله بنص قطعي، وفاعله آثم مستحق للعقاب، وتاركه مثاب. مثل: شرب الخمر."}
 ]
+
+# ============================================================
+# بيانات الدول
+# ============================================================
 
 countries_data = [
     {"country": "🇸🇦 السعودية", "madhab": "الحنبلي", "population": "36.4 مليون"},
     {"country": "🇪🇬 مصر", "madhab": "الشافعي", "population": "112.7 مليون"},
     {"country": "🇲🇦 المغرب", "madhab": "المالكي", "population": "37.8 مليون"},
+    {"country": "🇩🇿 الجزائر", "madhab": "المالكي", "population": "46.3 مليون"},
+    {"country": "🇹🇳 تونس", "madhab": "المالكي", "population": "12.5 مليون"},
     {"country": "🇹🇷 تركيا", "madhab": "الحنفي", "population": "87.5 مليون"},
     {"country": "🇮🇷 إيران", "madhab": "الجعفري", "population": "89.8 مليون"},
-    {"country": "🇴🇲 عُمان", "madhab": "الإباضي", "population": "4.7 مليون"}
+    {"country": "🇴🇲 عُمان", "madhab": "الإباضي", "population": "4.7 مليون"},
+    {"country": "🇵🇰 باكستان", "madhab": "الحنفي", "population": "248.5 مليون"},
+    {"country": "🇮🇩 إندونيسيا", "madhab": "الشافعي", "population": "281.6 مليون"}
 ]
 
-imams_data = [
-    {"name": "الإمام مالك بن أنس (93-179هـ)", "school": "المذهب المالكي", "scholars": "ابن القاسم، سحنون، ابن رشد، القرافي، خليل بن إسحاق"},
-    {"name": "الإمام محمد بن إدريس الشافعي (150-204هـ)", "school": "المذهب الشافعي", "scholars": "المزني، البويطي، النووي، ابن حجر الهيتمي، الرافعي"},
-    {"name": "الإمام أحمد بن حنبل (164-241هـ)", "school": "المذهب الحنبلي", "scholars": "أبو بكر الخلال، ابن قدامة، ابن تيمية، ابن القيم، محمد بن عبد الوهاب"},
-    {"name": "الإمام أبو حنيفة النعمان (80-150هـ)", "school": "المذهب الحنفي", "scholars": "أبو يوسف، محمد بن الحسن الشيباني، الطحاوي، الكاساني، ابن عابدين"},
-    {"name": "الإمام جعفر الصادق (80-148هـ)", "school": "المذهب الجعفري", "scholars": "الشيخ المفيد، الشريف المرتضى، الشيخ الطوسي، المحقق الحلي، السيد الخميني، السيد السيستاني"},
-    {"name": "الإمام زيد بن علي (80-122هـ)", "school": "المذهب الزيدي", "scholars": "أبو خالد الواسطي، الناصر الأطروش، الهادي يحيى بن الحسين، الإمام المنصور بالله"},
-    {"name": "الإمام جابر بن زيد (القرن الأول-93هـ)", "school": "المذهب الإباضي", "scholars": "أبو سعيد الكدمي، أبو نزار الخروصي، نور الدين السالمي، الشيخ أحمد الخليلي"}
-]
+# ============================================================
+# دالة البحث الذكي
+# ============================================================
 
 def smart_search(query, issues_data, category_filter, level='full'):
     if not query:
@@ -137,9 +167,13 @@ def smart_search(query, issues_data, category_filter, level='full'):
         })
     return final_results
 
+# ============================================================
+# الشعار والهوية
+# ============================================================
+
 st.markdown("""
 <div style="text-align: center; padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 30px; direction: rtl;">
-    <h1 style="font-size: 2.5rem; margin: 0;">📖 الجمع المرشد لآراء الفقه الإسلامي</h1>
+    <h1 style="font-size: 2.5rem; margin: 0;">📖 الجامع المختصر لآراء المذاهب</h1>
     <p style="font-size: 1.2rem; color: #d6e4de; margin: 0;">مرشد الآراء الفقهية</p>
     <p style="font-size: 0.95rem; color: #b2d1c4; margin: 0;">للفهم والتبصر، لا لإصدار الفتاوى</p>
 </div>
@@ -147,74 +181,141 @@ st.markdown("""
 
 st.markdown('<div style="direction: rtl;">', unsafe_allow_html=True)
 
-st.markdown("### 🔍 خطوات البحث")
+# ============================================================
+# الفقرة الأولى: اختيار المذهب
+# ============================================================
 
-category_filter = st.radio("١. اختر المجال الفقهي:", ["الكل", "العبادات", "المعاملات", "الأسرة", "الحياة اليومية"], horizontal=True)
+st.markdown("### 🏛️ الفقرة الأولى: اختيار المذهب")
 
-madhabs = st.multiselect("٢. اختر المذاهب التي تريد عرضها:", ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الظاهري", "الجعفري", "الزيدي", "الإباضي", "رأي آخر"], default=["المالكي", "الشافعي", "الحنبلي", "الحنفي"])
+madhab_group = st.radio(
+    "اختر مجموعة المذاهب:",
+    ["مذاهب السنة", "مذاهب الشيعة", "المذهب الإباضي", "آراء أخرى"],
+    horizontal=True
+)
 
-answer_level = st.radio("٣. اختر مستوى الإجابة:", ["⚡ مختصرة جداً (كلمة واحدة)", "📄 مختصرة (سطر واحد)", "📚 كاملة (تفصيلية)"], horizontal=True)
-level_map = {"⚡ مختصرة جداً (كلمة واحدة)": "very_short", "📄 مختصرة (سطر واحد)": "short", "📚 كاملة (تفصيلية)": "full"}
+if madhab_group == "مذاهب السنة":
+    madhab_options = ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الظاهري"]
+elif madhab_group == "مذاهب الشيعة":
+    madhab_options = ["الجعفري", "الزيدي"]
+elif madhab_group == "المذهب الإباضي":
+    madhab_options = ["الإباضي"]
+else:
+    madhab_options = ["رأي آخر"]
 
-search_query = st.text_input("٤. اكتب سؤالك:", placeholder="مثال: ما حكم صلاة المسافر؟")
+selected_madhab = st.selectbox("اختر المذهب:", madhab_options)
 
-if st.button("🔍 ابحث", use_container_width=True) and search_query:
-    results = smart_search(search_query, issues_data, category_filter, level_map[answer_level])
+# عرض معلومات عن المذهب المختار
+if selected_madhab in madhhab_data:
+    info = madhhab_data[selected_madhab]
+    st.info(f"""
+    **الإمام:** {info['imam']}  
+    **مكان الميلاد:** {info['birth']}  
+    **مكان التأسيس:** {info['foundation']}  
+    **فترة الحياة:** {info['life']}  
+    **أشهر الفقهاء:** {info['scholars']}
+    """)
+
+st.markdown("---")
+
+# ============================================================
+# الفقرة الثانية: اختيار الموضوع
+# ============================================================
+
+st.markdown("### 📂 الفقرة الثانية: اختيار الموضوع")
+
+category_filter = st.radio(
+    "اختر الموضوع:",
+    ["العبادات", "المعاملات", "الأسرة", "مواضيع أخرى"],
+    horizontal=True
+)
+
+if category_filter == "مواضيع أخرى":
+    category_filter = "الكل"
+
+st.markdown("---")
+
+# ============================================================
+# الفقرة الثالثة: طريقة عرض الإجابة
+# ============================================================
+
+st.markdown("### 📝 الفقرة الثالثة: طريقة عرض الإجابة")
+
+answer_level = st.radio(
+    "اختر مستوى الإجابة:",
+    ["مختصرة (كلمة)", "مبسطة (سطر)", "مفصل (أكثر من سطر)"],
+    horizontal=True
+)
+
+level_map = {
+    "مختصرة (كلمة)": "very_short",
+    "مبسطة (سطر)": "short",
+    "مفصل (أكثر من سطر)": "full"
+}
+selected_level = level_map[answer_level]
+
+st.markdown("---")
+
+# ============================================================
+# الفقرة الرابعة: كتابة السؤال
+# ============================================================
+
+st.markdown("### ✍️ الفقرة الرابعة: كتابة السؤال")
+
+search_query = st.text_input("", placeholder="اكتب سؤالك هنا...", label_visibility="collapsed")
+
+col1, col2, col3 = st.columns([1, 1, 4])
+with col1:
+    search_btn = st.button("🔍 ابحث", use_container_width=True)
+
+st.markdown("---")
+
+# ============================================================
+# الفقرة الخامسة: عرض الإجابة
+# ============================================================
+
+st.markdown("### 📊 الفقرة الخامسة: الإجابة")
+
+if search_btn and search_query:
+    results = smart_search(search_query, issues_data, category_filter, selected_level)
     if results:
-        st.markdown(f"### 📊 النتائج ({len(results)})")
+        st.markdown(f"**عدد النتائج:** {len(results)}")
         for r in results:
             with st.expander(f"📌 {r['title']} ({r['category']})"):
                 st.markdown(f"**الإجابة:** {r['answer']}")
                 st.markdown("*هذا والله أعلم*")
     else:
-        st.warning("🔍 لم نجد مسألة بهذا الوصف في المجال والمذاهب المختارة. جرّب تغيير الفلتر أو كلمة أقصر.")
+        st.warning("🔍 لم نجد مسألة بهذا الوصف. جرّب تغيير الفلتر أو كلمة أقصر.")
+else:
+    st.info("✍️ اكتب سؤالك ثم اضغط 'ابحث' للحصول على الإجابة")
 
 st.markdown("---")
-st.markdown("### ✦ كل الموضوعات")
-cols = st.columns(4)
-for i, cat in enumerate(["☽ العبادات", "◈ المعاملات", "⌂ الأسرة", "✧ الحياة اليومية"]):
-    with cols[i]:
-        if st.button(cat, use_container_width=True):
-            category_name = cat.replace("☽ ", "").replace("◈ ", "").replace("⌂ ", "").replace("✧ ", "")
-            st.info(f"📂 عرض مسائل {category_name}")
 
-st.markdown("---")
-st.markdown("### 🗺️ خريطة الآراء")
+# ============================================================
+# فقرات هامشية مطوية (اختيارية)
+# ============================================================
 
-with st.expander("المذاهب السنية", expanded=True):
-    cols = st.columns(5)
-    sunni_schools = ["المالكي", "الشافعي", "الحنبلي", "الحنفي", "الظاهري"]
-    for i, school in enumerate(sunni_schools):
-        with cols[i]:
-            if st.button(school, use_container_width=True):
-                st.info(f"🗺️ تم اختيار المذهب: {school}")
+st.markdown("### 📚 فقرات هامشية (اختيارية)")
 
-with st.expander("المذاهب الشيعية", expanded=True):
-    cols = st.columns(2)
-    shia_schools = ["الجعفري الاثنا عشري", "الزيدي"]
-    for i, school in enumerate(shia_schools):
-        with cols[i]:
-            if st.button(school, use_container_width=True):
-                st.info(f"🗺️ تم اختيار المذهب: {school}")
+# ============================================================
+# 1. الأئمة المؤسسون
+# ============================================================
 
-with st.expander("المذهب الإباضي", expanded=True):
-    if st.button("الإباضي", use_container_width=True):
-        st.info("🗺️ تم اختيار المذهب: الإباضي")
-
-if st.button("رأي آخر", use_container_width=True):
-    st.info("🗺️ تم اختيار: رأي آخر")
-
-with st.expander("📜 الأئمة المؤسسون", expanded=False):
-    for imam in imams_data:
+with st.expander("📜 الأئمة المؤسسون للمذاهب", expanded=False):
+    for madhab, info in madhhab_data.items():
         st.markdown(f"""
         <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #d4a854; direction: rtl;">
-            <h4 style="margin: 0; color: #1e3a2f;">{imam['name']}</h4>
-            <p style="margin: 2px 0; color: #d4a854; font-weight: 600;">{imam['school']}</p>
-            <p style="margin: 4px 0 0 0; color: #3d4f5f;">أشهر العلماء: {imam['scholars']}</p>
+            <h4 style="margin: 0; color: #1e3a2f;">{info['imam']}</h4>
+            <p style="margin: 2px 0; color: #d4a854; font-weight: 600;">{madhab}</p>
+            <p style="margin: 2px 0; color: #3d4f5f;">📍 {info['birth']} | 🏛️ {info['foundation']} | 🕰️ {info['life']}</p>
+            <p style="margin: 4px 0 0 0; color: #3d4f5f;">أشهر الفقهاء: {info['scholars']}</p>
         </div>
         """, unsafe_allow_html=True)
 
-with st.expander("🗺️ المذهب الرسمي السائد في الدول الإسلامية", expanded=False):
+# ============================================================
+# 2. الدول والمذاهب الرسمية
+# ============================================================
+
+with st.expander("🗺️ الدول الإسلامية والمذهب الرسمي السائد", expanded=False):
     cols = st.columns(3)
     for i, country in enumerate(countries_data):
         with cols[i % 3]:
@@ -226,7 +327,11 @@ with st.expander("🗺️ المذهب الرسمي السائد في الدول
             </div>
             """, unsafe_allow_html=True)
 
-with st.expander("📚 قاموس المصطلحات الفقهية", expanded=False):
+# ============================================================
+# 3. المصطلحات الرئيسية
+# ============================================================
+
+with st.expander("📚 المصطلحات الفقهية الرئيسية", expanded=False):
     for term in glossary_terms:
         st.markdown(f"""
         <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #1e3a2f; direction: rtl;">
@@ -235,12 +340,35 @@ with st.expander("📚 قاموس المصطلحات الفقهية", expanded=F
         </div>
         """, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+# ============================================================
+# 4. التقييم والتعليقات
+# ============================================================
 
+with st.expander("⭐ التقييم والملاحظات", expanded=False):
+    st.markdown("#### كيف تقيم محتوى هذا التطبيق؟")
+    rating = st.slider("", 1, 5, 3, label_visibility="collapsed")
+    st.markdown(f"**تقييمك:** {'⭐' * rating} ({rating}/5)")
+    
+    comment = st.text_area("📝 أضف ملاحظاتك أو اقتراحاتك:", placeholder="اكتب هنا...")
+    if st.button("إرسال"):
+        if comment:
+            st.success("✅ شكراً على ملاحظاتك! تم استلامها بنجاح.")
+        else:
+            st.warning("⚠️ الرجاء كتابة ملاحظاتك قبل الإرسال.")
+
+# ============================================================
+# 5. نبذة عن البرنامج
+# ============================================================
+
+st.markdown("---")
 st.markdown("""
-<div style="text-align: center; padding: 20px 0; color: #6a7f78; direction: rtl;">
-    <p>المعرفة أمانة. نراجع كل مادة من مصادرها الأصلية، ونوضح مواضع الاتفاق والاختلاف بإنصاف.</p>
-    <a href="#" style="color: #8bc4b0; text-decoration: none; font-weight: 600;">تعرّف على منهجيتنا →</a>
-    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجمع المرشد لآراء الفقه الإسلامي</p>
+<div style="text-align: center; padding: 20px 0; color: #6a7f78; direction: rtl; background: #f5f7f5; border-radius: 12px;">
+    <p style="font-size: 1.1rem; font-weight: bold;">📖 نبذة عن البرنامج</p>
+    <p>هذا التطبيق هو <strong>مرجع مختصر للآراء الفقهية</strong>، يهدف إلى تسهيل الوصول إلى آراء المذاهب المختلفة في المسائل الفقهية.</p>
+    <p style="color: #d4a854; font-weight: bold;">⚠️ هذا التطبيق ليس موقع فتوى، ولا يصدر أحكاماً شرعية، بل يعرض آراء الفقهاء للفهم والتبصر.</p>
+    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المختصر لآراء المذاهب</p>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+```
