@@ -1,13 +1,16 @@
+```python
 import streamlit as st
 import json
 import os
 from datetime import datetime
+import re
+from difflib import get_close_matches
 
 # ============================================================
 # 1. إعداد الصفحة
 # ============================================================
 st.set_page_config(
-    page_title="بيان - مرشد الآراء الفقهية",
+    page_title="الجامع المرشد للآراء الفقهية",
     page_icon="📖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -28,7 +31,7 @@ def get_default_issues():
                 "short": "سنة مؤكدة عند الجمهور، واجبة عند الحنفية",
                 "full": "تجب صلاة الجماعة في المسجد على الرجال عند جمهور الفقهاء؛ فهي فرض عين عند الحنابلة، واجب مؤكد عند الحنفية، فرض كفاية عند المالكية والشافعية، ومستحبة تأكيداً عند الجعفرية في زمن الغيبة."
             },
-            "keywords": ["جماعة", "مسجد", "رجال", "صلاة", "فرض", "سنة", "واجب"]
+            "keywords": ["جماعة", "مسجد", "رجال", "صلاة", "فرض", "سنة", "واجب", "الجماعة", "المسجد"]
         },
         {
             "id": 2,
@@ -39,7 +42,7 @@ def get_default_issues():
                 "short": "زكاة الأسهم واجبة إذا بلغت النصاب",
                 "full": "تجب زكاة الأسهم إذا كانت للاستثمار والتجارة، وبلغت قيمتها النصاب (85 جرام ذهب)، وتُحسب بقيمتها السوقية في نهاية الحول، ويُخرج 2.5% من قيمتها."
             },
-            "keywords": ["زكاة", "أسهم", "استثمار", "تجارة", "نصاب", "مال"]
+            "keywords": ["زكاة", "أسهم", "استثمار", "تجارة", "نصاب", "مال", "الزكاة", "الأسهم"]
         },
         {
             "id": 3,
@@ -50,7 +53,7 @@ def get_default_issues():
                 "short": "يجوز جمع الصلاة في السفر للمسافر",
                 "full": "يجوز للمسافر جمع صلاة الظهر مع العصر، والمغرب مع العشاء، تقديماً أو تأخيراً، في وقت إحداهما، وذلك تخفيفاً من الله تعالى على المسافرين."
             },
-            "keywords": ["جمع", "سفر", "مسافر", "صلاة", "تخفيف", "رخصة"]
+            "keywords": ["جمع", "سفر", "مسافر", "صلاة", "تخفيف", "رخصة", "الجمع", "السفر"]
         },
         {
             "id": 4,
@@ -61,7 +64,7 @@ def get_default_issues():
                 "short": "نواقض الوضوء تبطل الطهارة وتوجب إعادته",
                 "full": "نواقض الوضوء هي: الخارج من السبيلين (البول، الغائط، الريح)، النوم المستغرق، زوال العقل (بإغماء أو سكر)، مسّ الفرج بغير حائل، ولمس المرأة بشهوة عند بعض المذاهب."
             },
-            "keywords": ["وضوء", "نواقض", "طهارة", "بول", "غائط", "نوم", "مس"]
+            "keywords": ["وضوء", "نواقض", "طهارة", "بول", "غائط", "نوم", "مس", "الوضوء"]
         },
         {
             "id": 5,
@@ -72,7 +75,29 @@ def get_default_issues():
                 "short": "الربا من كبائر الذنوب ومحرم قطعاً",
                 "full": "الربا محرم بنص القرآن والسنة، وهو كل زيادة مشروطة في القرض أو المعاملة، سواء كانت نقدية أو عينية. الربا من السبع الموبقات، والله ورسوله حاربا من يتعامل به."
             },
-            "keywords": ["ربا", "حرام", "قرض", "فائدة", "بنوك", "معاملة", "ذنب"]
+            "keywords": ["ربا", "حرام", "قرض", "فائدة", "بنوك", "معاملة", "ذنب", "الربا"]
+        },
+        {
+            "id": 6,
+            "title": "حكم النقاب",
+            "category": "العبادات",
+            "rulings": {
+                "very_short": "مختلف فيه",
+                "short": "النقاب مختلف فيه بين الفقهاء، والأفضل التقوى",
+                "full": "النقاب موضوع خلاف بين الفقهاء. يرى بعضهم أنه واجب، ويرى آخرون أنه مستحب أو مباح. والأمر يعود للمرأة في اختيار ما تطمئن به قلبها، مع مراعاة العرف والتقاليد."
+            },
+            "keywords": ["نقاب", "حجاب", "مرأة", "وجه", "الستر", "المرأة"]
+        },
+        {
+            "id": 7,
+            "title": "التيمم",
+            "category": "العبادات",
+            "rulings": {
+                "very_short": "جائز",
+                "short": "التيمم جائز عند عدم وجود الماء أو العذر الشرعي",
+                "full": "التيمم هو بديل عن الوضوء والغسل عند عدم وجود الماء، أو لمرض يمنع استعماله. يُمسح التراب على الوجه والكفين، وهو رخصة من الله للتيسير على عباده."
+            },
+            "keywords": ["تيمم", "ماء", "تراب", "وضوء", "غسل", "رخصة", "مرض", "التيمم"]
         }
     ]
 
@@ -121,23 +146,97 @@ countries_data = get_default_countries()
 imams_data = get_default_imams()
 
 # ============================================================
-# 4. واجهة المستخدم
+# 4. الذكاء الاصطناعي لفهم الأسئلة
+# ============================================================
+
+def smart_search(query, issues_data, level='full'):
+    """بحث ذكي يفهم الأسئلة بأسلوب ركيك ويعطي أقرب إجابة"""
+    if not query:
+        return []
+    
+    query = query.strip().lower()
+    results = []
+    
+    # 1. البحث المباشر في العناوين والكلمات المفتاحية
+    for issue in issues_data:
+        title_match = query in issue.get('title', '').lower()
+        keyword_match = any(query in kw.lower() for kw in issue.get('keywords', []))
+        full_text_match = query in issue.get('rulings', {}).get('full', '').lower()
+        
+        if title_match or keyword_match or full_text_match:
+            results.append(issue)
+    
+    # 2. إذا لم يجد، استخدم خوارزمية التشابه (مطابقة الكلمات)
+    if not results:
+        all_keywords = []
+        for issue in issues_data:
+            issue_keywords = issue.get('keywords', []) + [issue.get('title', '')]
+            all_keywords.extend(issue_keywords)
+        
+        # تقسيم الاستعلام إلى كلمات
+        query_words = re.findall(r'\w+', query)
+        
+        for issue in issues_data:
+            issue_text = issue.get('title', '').lower() + ' ' + ' '.join(issue.get('keywords', [])).lower()
+            for word in query_words:
+                if word in issue_text:
+                    results.append(issue)
+                    break
+    
+    # 3. إذا لم يجد، استخدم البحث بالمرادفات (محاكاة بسيطة)
+    if not results:
+        synonyms = {
+            "صلاة": ["صلات", "الصلاة", "صلي", "يصلي"],
+            "زكاة": ["زكاه", "الزكاة", "زكي", "يزكي"],
+            "سفر": ["السفر", "مسافر", "سافرة"],
+            "وضوء": ["الوضوء", "وضوئ", "يتوضأ"],
+            "ربا": ["الربا", "ربوي", "فوائد", "فائدة"],
+            "جماعة": ["الجماعة", "جماعه", "الجماعه"],
+            "نقاب": ["النقاب", "حجاب", "وجه", "مرأة"],
+            "تيمم": ["التيمم", "تراب", "صعيد"]
+        }
+        
+        for word in query_words:
+            for synonym_key, synonym_list in synonyms.items():
+                if word in synonym_list:
+                    for issue in issues_data:
+                        if synonym_key in issue.get('title', '').lower() or any(synonym_key in kw.lower() for kw in issue.get('keywords', [])):
+                            if issue not in results:
+                                results.append(issue)
+    
+    # 4. عرض النتائج حسب المستوى المطلوب
+    final_results = []
+    for issue in results:
+        rulings = issue.get('rulings', {})
+        answer = rulings.get(level, rulings.get('full', 'لا توجد إجابة'))
+        final_results.append({
+            'id': issue.get('id'),
+            'title': issue.get('title'),
+            'category': issue.get('category'),
+            'answer': answer,
+            'level': level
+        })
+    
+    return final_results
+
+# ============================================================
+# 5. واجهة المستخدم
 # ============================================================
 
 # الشعار والهوية
 st.markdown("""
 <div style="text-align: center; padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 30px;">
-    <h1 style="font-size: 3rem; margin: 0;">📖 بيان</h1>
+    <h1 style="font-size: 2.5rem; margin: 0;">📖 الجامع المرشد للآراء الفقهية</h1>
     <p style="font-size: 1.2rem; color: #d6e4de; margin: 0;">مرشد الآراء الفقهية</p>
     <p style="font-size: 0.95rem; color: #b2d1c4; margin: 0;">للفهم والتبصر، لا لإصدار الفتاوى</p>
 </div>
 """, unsafe_allow_html=True)
 
 # ============================================================
-# 5. البحث
+# 6. البحث الذكي
 # ============================================================
 
-st.markdown("### ❓ ماذا تريد أن تعرف اليوم？")
+st.markdown("### ❓ ماذا تريد أن تعرف اليوم؟")
 
 col1, col2 = st.columns([4, 1])
 with col1:
@@ -160,32 +259,26 @@ level_map = {
 selected_level = level_map[answer_level]
 
 # ============================================================
-# 6. عرض النتائج
+# 7. عرض النتائج
 # ============================================================
 
 if search_query or search_btn:
-    query = search_query.strip().lower()
+    query = search_query.strip()
     if query:
-        results = []
-        for issue in issues_data:
-            if (query in issue.get('title', '').lower() or
-                any(query in kw.lower() for kw in issue.get('keywords', [])) or
-                query in issue.get('rulings', {}).get('full', '').lower()):
-                results.append(issue)
+        results = smart_search(query, issues_data, selected_level)
         
         if results:
             st.markdown(f"### 📊 النتائج ({len(results)} مسألة)")
             for issue in results:
                 with st.expander(f"📌 {issue['title']} ({issue['category']})"):
-                    answer = issue.get('rulings', {}).get(selected_level, issue.get('rulings', {}).get('full', 'لا توجد إجابة'))
-                    st.markdown(f"**الإجابة:** {answer}")
+                    st.markdown(f"**الإجابة:** {issue['answer']}")
         else:
             st.warning("🔍 لم نجد مسألة بهذا الوصف. جرّب كلمة أقصر أو اختر موضوعاً آخر.")
     else:
         st.info("🔍 اكتب سؤالك في الأعلى للحصول على إجابة")
 
 # ============================================================
-# 7. الموضوعات
+# 8. الموضوعات
 # ============================================================
 
 st.markdown("---")
@@ -200,7 +293,7 @@ for i, cat in enumerate(categories):
             st.info(f"📂 عرض مسائل {category_name}")
 
 # ============================================================
-# 8. خريطة الآراء (المذاهب)
+# 9. خريطة الآراء (المذاهب)
 # ============================================================
 
 st.markdown("---")
@@ -226,7 +319,7 @@ with st.expander("المذهب الإباضي", expanded=True):
 st.button("رأي آخر", use_container_width=True)
 
 # ============================================================
-# 9. الأئمة المؤسسون
+# 10. الأئمة المؤسسون
 # ============================================================
 
 st.markdown("---")
@@ -241,7 +334,7 @@ with st.expander("📜 الأئمة المؤسسون", expanded=False):
         """, unsafe_allow_html=True)
 
 # ============================================================
-# 10. الدول والمذاهب الرسمية
+# 11. الدول والمذاهب الرسمية
 # ============================================================
 
 with st.expander("🗺️ المذهب الرسمي السائد في الدول الإسلامية", expanded=False):
@@ -257,7 +350,7 @@ with st.expander("🗺️ المذهب الرسمي السائد في الدول
             """, unsafe_allow_html=True)
 
 # ============================================================
-# 11. قاموس المصطلحات
+# 12. قاموس المصطلحات
 # ============================================================
 
 with st.expander("📚 قاموس المصطلحات الفقهية", expanded=False):
@@ -270,7 +363,7 @@ with st.expander("📚 قاموس المصطلحات الفقهية", expanded=F
         """, unsafe_allow_html=True)
 
 # ============================================================
-# 12. التذييل
+# 13. التذييل
 # ============================================================
 
 st.markdown("---")
@@ -278,6 +371,7 @@ st.markdown("""
 <div style="text-align: center; padding: 20px 0; color: #6a7f78;">
     <p>المعرفة أمانة. نراجع كل مادة من مصادرها الأصلية، ونوضح مواضع الاتفاق والاختلاف بإنصاف.</p>
     <a href="#" style="color: #8bc4b0; text-decoration: none; font-weight: 600;">تعرّف على منهجيتنا →</a>
-    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ بيان</p>
+    <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
 </div>
 """, unsafe_allow_html=True)
+```
