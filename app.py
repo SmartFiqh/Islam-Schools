@@ -8,9 +8,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# =========================================================
-# LANGUAGE METADATA
-# =========================================================
 LANG_META = {
     "ar": {"name": "العربية", "dir": "rtl", "font": "Tahoma, 'Segoe UI', sans-serif"},
     "en": {"name": "English", "dir": "ltr", "font": "'Segoe UI', Arial, sans-serif"},
@@ -22,9 +19,6 @@ LANG_META = {
 LANGS = list(LANG_META.keys())
 CONTENT_LANGS = ["ar", "en"]
 
-# =========================================================
-# UI STRINGS
-# =========================================================
 UI = {
     "app_title": {"ar": "الجامع المختصر لآراء المذاهب", "en": "The Concise Compendium of Madhhab Opinions",
                   "fr": "Le Recueil concis des avis des écoles juridiques", "fa": "جامع مختصر آراء مذاهب",
@@ -148,9 +142,6 @@ UI = {
 def t(key, lang):
     return UI.get(key, {}).get(lang, UI.get(key, {}).get("en", key))
 
-# =========================================================
-# MADHHAB NAMES & GROUPS
-# =========================================================
 MADHHAB_NAMES = {
     "maliki": {"ar": "مالكي", "en": "Maliki", "fr": "Malikite", "fa": "مالکی", "ms": "Maliki", "ur": "مالکی"},
     "shafii": {"ar": "شافعي", "en": "Shafi'i", "fr": "Chaféite", "fa": "شافعی", "ms": "Syafie", "ur": "شافعی"},
@@ -181,9 +172,6 @@ MADHHAB_GROUPS = {
     "other": ["other"],
 }
 
-# =========================================================
-# TOPICS
-# =========================================================
 TOPICS = {
     "ibadat": {"ar": "العبادات", "en": "Worship", "fr": "Culte", "fa": "عبادات", "ms": "Ibadat", "ur": "عبادات"},
     "muamalat": {"ar": "المعاملات", "en": "Transactions", "fr": "Transactions", "fa": "معاملات", "ms": "Muamalat", "ur": "معاملات"},
@@ -192,9 +180,6 @@ TOPICS = {
 }
 TOPIC_ORDER = ["ibadat", "muamalat", "usra", "other"]
 
-# =========================================================
-# ISSUES DATA
-# =========================================================
 ISSUES = [
     {
         "id": 1, "topic": "ibadat",
@@ -294,9 +279,6 @@ ISSUES = [
     },
 ]
 
-# =========================================================
-# GLOSSARY
-# =========================================================
 GLOSSARY = [
     {"ar": {"term": "الفرض / فرض العين", "definition": "ما طلب الشارع فعله طلباً جازماً من كل مكلف بعينه، يُثاب فاعله ويُعاقب تاركه."},
       "en": {"term": "Fard / Fard 'Ayn (Individual Obligation)", "definition": "An act the Lawgiver has decisively commanded every legally responsible individual to perform; its performer is rewarded and its abandoner is sinful."}},
@@ -314,9 +296,6 @@ GLOSSARY = [
       "en": {"term": "Haram (Forbidden)", "definition": "An act the Lawgiver has decisively prohibited by a definitive text; its performer is sinful and its avoider is rewarded."}},
 ]
 
-# =========================================================
-# IMAMS
-# =========================================================
 IMAMS = [
     {"ar_name": "الإمام مالك بن أنس الأصبحي", "en_name": "Imam Malik ibn Anas al-Asbahi", "madhab": "maliki",
       "lifespan": "93 - 179 AH", "birthplace": {"ar": "المدينة المنورة", "en": "Medina"},
@@ -360,9 +339,6 @@ IMAMS = [
                     "en": "Abu Sa'id al-Kudami, Abu Nizar al-Kharusi, Nur al-Din al-Salimi, Shaykh Ahmad al-Khalili"}},
 ]
 
-# =========================================================
-# COUNTRIES (with flags)
-# =========================================================
 COUNTRIES = [
     {"flag": "🇸🇦", "name": {"ar": "السعودية", "en": "Saudi Arabia"}, "madhab": "hanbali", "population": "36.4M"},
     {"flag": "🇪🇬", "name": {"ar": "مصر", "en": "Egypt"}, "madhab": "shafii", "population": "112.7M"},
@@ -377,10 +353,6 @@ COUNTRIES = [
     {"flag": "🇲🇾", "name": {"ar": "ماليزيا", "en": "Malaysia"}, "madhab": "shafii", "population": "34.7M"},
     {"flag": "🇮🇩", "name": {"ar": "إندونيسيا", "en": "Indonesia"}, "madhab": "shafii", "population": "281.6M"},
 ]
-
-# =========================================================
-# HELPERS
-# =========================================================
 
 def cl(lang):
     return lang if lang in CONTENT_LANGS else "en"
@@ -422,7 +394,6 @@ def search_issues(query, topic_filter, selected_madhab_list, level, lang):
         tr = issue["t"].get(language, issue["t"]["en"])
         by_madhab = issue.get("by_madhab", {}).get(language, {})
         
-        # جمع آراء المذاهب المختارة
         answers = []
         for madhab_key in selected_madhab_list:
             per_madhab = by_madhab.get(madhab_key)
@@ -434,7 +405,6 @@ def search_issues(query, topic_filter, selected_madhab_list, level, lang):
                     "note": f"{t('note_madhab', lang)} {madhab_name(madhab_key, lang)}"
                 })
         
-        # إذا لم توجد آراء للمذاهب المختارة، استخدم الرأي العام
         if not answers:
             answer = tr.get(level, tr["full"])
             answers.append({
@@ -450,9 +420,6 @@ def search_issues(query, topic_filter, selected_madhab_list, level, lang):
         })
     return results
 
-# =========================================================
-# LANGUAGE SELECTOR
-# =========================================================
 if "lang" not in st.session_state:
     st.session_state.lang = "ar"
 
@@ -470,9 +437,6 @@ meta = LANG_META[lang]
 DIR = meta["dir"]
 FONT = meta["font"]
 
-# =========================================================
-# GLOBAL STYLE
-# =========================================================
 st.markdown(
     f"""
     <style>
@@ -548,9 +512,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# =========================================================
-# HEADER
-# =========================================================
 st.markdown(
     f"""
     <div class="main-title-block" style="padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 25px;">
@@ -564,9 +525,6 @@ st.markdown(
 if lang not in CONTENT_LANGS and t("content_fallback_note", lang):
     st.info(t("content_fallback_note", lang))
 
-# =========================================================
-# SEARCH SECTION
-# =========================================================
 with st.expander(t("search_section_title", lang), expanded=True):
 
     st.markdown(f"#### {t('step1_title', lang)}")
@@ -671,9 +629,6 @@ with st.expander(t("search_section_title", lang), expanded=True):
     else:
         st.caption(t("empty_placeholder", lang))
 
-# =========================================================
-# RESOURCES SECTION
-# =========================================================
 with st.expander(t("resources_section_title", lang), expanded=False):
 
     tab_imams, tab_countries, tab_glossary = st.tabs(
@@ -731,13 +686,9 @@ with st.expander(t("resources_section_title", lang), expanded=False):
                 unsafe_allow_html=True,
             )
 
-# =========================================================
-# RATING SECTION (Star Rating)
-# =========================================================
 st.markdown("---")
 st.markdown(f"#### {t('rating_label', lang)}")
 
-# Star rating using session state
 if "rating_value" not in st.session_state:
     st.session_state.rating_value = 0
 
@@ -753,9 +704,6 @@ if st.session_state.rating_value > 0:
 else:
     st.caption("اضغط على النجمة لتقييم الإجابة")
 
-# =========================================================
-# FOOTER
-# =========================================================
 st.markdown(
     f"""
     <div style="text-align:center; padding:16px 0; color:#6a7f78;">
