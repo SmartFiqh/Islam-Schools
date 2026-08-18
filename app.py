@@ -75,7 +75,7 @@ def get_default_issues():
                 "short": "الربا من كبائر الذنوب ومحرم قطعاً",
                 "full": "الربا محرم بنص القرآن والسنة، وهو كل زيادة مشروطة في القرض أو المعاملة، سواء كانت نقدية أو عينية. الربا من السبع الموبقات، والله ورسوله حاربا من يتعامل به."
             },
-            "keywords": ["ربا", "حرام", "قرض", "فائدة", "بنوك", "معاملة", "ذنب", "الربا"]
+            "keywords": ["ربa", "حرام", "قرض", "فائدة", "بنوك", "معاملة", "ذنب", "الربا"]
         },
         {
             "id": 6,
@@ -239,9 +239,9 @@ def smart_search(query, issues_data, category_filter, madhab_filter, level='full
 # 5. واجهة المستخدم
 # ============================================================
 
-# الشعار والهوية
+# الشعار والهوية - اتجاه النص من اليمين لليسار
 st.markdown("""
-<div style="text-align: center; padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 30px;">
+<div style="text-align: center; padding: 20px 0; background: linear-gradient(145deg, #0f231c, #2a5c4a); color: white; border-radius: 16px; margin-bottom: 30px; direction: rtl;">
     <h1 style="font-size: 2.5rem; margin: 0;">📖 الجامع المرشد للآراء الفقهية</h1>
     <p style="font-size: 1.2rem; color: #d6e4de; margin: 0;">مرشد الآراء الفقهية</p>
     <p style="font-size: 0.95rem; color: #b2d1c4; margin: 0;">للفهم والتبصر، لا لإصدار الفتاوى</p>
@@ -251,6 +251,8 @@ st.markdown("""
 # ============================================================
 # 6. خيارات المستخدم (التدرج في البحث)
 # ============================================================
+
+st.markdown('<div style="direction: rtl;">', unsafe_allow_html=True)
 
 st.markdown("---")
 st.markdown("### 🔍 خطوات البحث")
@@ -369,7 +371,7 @@ st.markdown("---")
 with st.expander("📜 الأئمة المؤسسون", expanded=False):
     for imam in imams_data:
         st.markdown(f"""
-        <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #d4a854;">
+        <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #d4a854; direction: rtl;">
             <h4 style="margin: 0; color: #1e3a2f;">{imam['name']}</h4>
             <p style="margin: 2px 0; color: #d4a854; font-weight: 600;">{imam['school']}</p>
             <p style="margin: 4px 0 0 0; color: #3d4f5f;">أشهر العلماء: {imam['scholars']}</p>
@@ -385,7 +387,7 @@ with st.expander("🗺️ المذهب الرسمي السائد في الدول
     for i, country in enumerate(countries_data):
         with cols[i % 3]:
             st.markdown(f"""
-            <div style="background: #f5f7f5; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border-right: 3px solid #d4a854;">
+            <div style="background: #f5f7f5; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border-right: 3px solid #d4a854; direction: rtl;">
                 <strong>{country['country']}</strong><br>
                 <span style="color: #d4a854;">{country['madhab']}</span><br>
                 <span style="font-size: 0.8rem; color: #6a7f78;">👥 {country['population']}</span>
@@ -399,19 +401,20 @@ with st.expander("🗺️ المذهب الرسمي السائد في الدول
 with st.expander("📚 قاموس المصطلحات الفقهية", expanded=False):
     for term in glossary_terms:
         st.markdown(f"""
-        <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #1e3a2f;">
+        <div style="background: #f5f7f5; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #1e3a2f; direction: rtl;">
             <h4 style="margin: 0; color: #1e3a2f;">{term['term']}</h4>
             <p style="margin: 4px 0 0 0; color: #3d4f5f;">{term['definition']}</p>
         </div>
         """, unsafe_allow_html=True)
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 # ============================================================
 # 14. التذييل
 # ============================================================
 
-st.markdown("---")
 st.markdown("""
-<div style="text-align: center; padding: 20px 0; color: #6a7f78;">
+<div style="text-align: center; padding: 20px 0; color: #6a7f78; direction: rtl;">
     <p>المعرفة أمانة. نراجع كل مادة من مصادرها الأصلية، ونوضح مواضع الاتفاق والاختلاف بإنصاف.</p>
     <a href="#" style="color: #8bc4b0; text-decoration: none; font-weight: 600;">تعرّف على منهجيتنا →</a>
     <p style="font-size: 0.8rem; margin-top: 10px;">© ٢٠٢٤ الجامع المرشد للآراء الفقهية</p>
