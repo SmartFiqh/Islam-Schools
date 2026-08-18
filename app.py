@@ -340,6 +340,176 @@ ISSUES = [
                    "full": "Il est permis au voyageur de raccourcir les prières à quatre unités (Dhuhr, Asr, Isha) à deux unités, et de regrouper les prières (Dhuhr avec Asr, et Maghrib avec Isha). C'est un allègement accordé par Dieu pour faciliter la tâche aux voyageurs."},
         },
     },
+    # ========== NEW ISSUE: Divorce of a Menstruating Woman ==========
+    {
+        "id": 7,
+        "topic": "family",
+        "title": {
+            "ar": "طلاق الحائض",
+            "en": "Divorce of a Menstruating Woman",
+            "fr": "Le divorce de la femme en période de menstrues"
+        },
+        "keywords": {
+            "ar": ["طلاق", "حائض", "حيض", "الطلاق", "الحيض", "العدة"],
+            "en": ["divorce", "menstruating", "menstruation", "talaq", "iddah"],
+            "fr": ["divorce", "menstrues", "menstruation", "talaq", "idda"]
+        },
+        "rulings": {
+            "ar": {
+                "very_short": "بدعي",
+                "short": "طلاق الحائض بدعي ومحرم، ويقع مع الإثم",
+                "full": "طلاق الحائض هو طلاق المرأة أثناء حيضها، وهو من الطلاق البدعي المحرم عند جمهور الفقهاء، ويقع الطلاق مع الإثم، ويجب على المطلق أن يراجعها إن كان في العدة، أو ينتظر حتى تطهر ثم يطلقها في طهر لم يمسها فيه."
+            },
+            "en": {
+                "very_short": "Bid'ah (Innovative)",
+                "short": "Divorcing a menstruating woman is a prohibited innovation, but the divorce is valid",
+                "full": "Divorcing a menstruating woman is considered a prohibited innovation (bid'ah) according to the majority of jurists. The divorce is still valid but sinful. The husband is required to either take her back during the waiting period (iddah) or wait until she becomes pure and then divorce her in a state of purity without having intercourse."
+            },
+            "fr": {
+                "very_short": "Bid'a (innovateur)",
+                "short": "Divorcer une femme en période de menstrues est une innovation interdite, mais le divorce est valable",
+                "full": "Divorcer une femme en période de menstrues est considéré comme une innovation interdite (bid'a) selon la majorité des juristes. Le divorce est néanmoins valable mais le mari commet un péché. Il doit soit la reprendre durant sa période d'attente (idda), soit attendre qu'elle soit pure pour la divorcer dans un état de pureté sans avoir eu de rapports."
+            }
+        },
+        "rulings_by_madhab": {
+            "maliki": {
+                "ar": {
+                    "very_short": "بدعي",
+                    "short": "طلاق الحائض بدعي عند المالكية",
+                    "full": "طلاق الحائض بدعي عند المالكية، ولكنه يقع مع الإثم، ويجب على الزوج أن يراجعها إذا لم تنقض عدتها."
+                },
+                "en": {
+                    "very_short": "Bid'ah",
+                    "short": "Innovative according to Malikis, but valid",
+                    "full": "Divorcing a menstruating woman is considered an innovation according to Malikis, but it is still valid. The husband must take her back if her waiting period has not ended."
+                },
+                "fr": {
+                    "very_short": "Bid'a",
+                    "short": "Innovateur selon les malikites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est considéré comme une innovation selon les malikites, mais le divorce est valable. Le mari doit la reprendre si sa période d'attente n'est pas terminée."
+                }
+            },
+            "shafii": {
+                "ar": {
+                    "very_short": "محرم",
+                    "short": "طلاق الحائض محرم عند الشافعية، ويقع مع الإثم",
+                    "full": "طلاق الحائض محرم عند الشافعية، وهو من الطلاق البدعي، ويقع الطلاق مع الإثم، ويجب أن يطلقها في طهر لم يمسها فيه."
+                },
+                "en": {
+                    "very_short": "Forbidden",
+                    "short": "Forbidden according to Shafi'is, but valid",
+                    "full": "Divorcing a menstruating woman is forbidden according to Shafi'is, and it is considered an innovative divorce. The divorce is still valid but sinful. He must divorce her in a state of purity without having intercourse."
+                },
+                "fr": {
+                    "very_short": "Interdit",
+                    "short": "Interdit selon les chaféites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est interdit selon les chaféites, et c'est un divorce innovateur. Le divorce est valable mais le mari commet un péché. Il doit la divorcer dans un état de pureté sans avoir eu de rapports."
+                }
+            },
+            "hanafi": {
+                "ar": {
+                    "very_short": "بدعي",
+                    "short": "طلاق الحائض بدعي عند الحنفية، ويقع مع الإثم",
+                    "full": "طلاق الحائض بدعي عند الحنفية، وهو طلاق غير مشروع، لكنه يقع مع الإثم، ويجب على الزوج أن يراجعها إذا كانت في العدة."
+                },
+                "en": {
+                    "very_short": "Bid'ah",
+                    "short": "Innovative according to Hanafis, but valid",
+                    "full": "Divorcing a menstruating woman is considered an innovation according to Hanafis, and it is not legally sanctioned, but it is still valid. The husband must take her back if she is still in her waiting period."
+                },
+                "fr": {
+                    "very_short": "Bid'a",
+                    "short": "Innovateur selon les hanafites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est considéré comme une innovation selon les hanafites, et ce n'est pas légalement sanctionné, mais le divorce est valable. Le mari doit la reprendre si elle est encore dans sa période d'attente."
+                }
+            },
+            "hanbali": {
+                "ar": {
+                    "very_short": "بدعي",
+                    "short": "طلاق الحائض بدعي عند الحنابلة، ويقع مع الإثم",
+                    "full": "طلاق الحائض بدعي عند الحنابلة، وهو طلاق غير جائز شرعاً، لكنه يقع مع الإثم، ويجب على الزوج أن يراجعها ويطلقها في طهر طاهر."
+                },
+                "en": {
+                    "very_short": "Bid'ah",
+                    "short": "Innovative according to Hanbalis, but valid",
+                    "full": "Divorcing a menstruating woman is considered an innovation according to Hanbalis, and it is not legally permissible, but it is still valid. The husband must take her back and divorce her in a pure state."
+                },
+                "fr": {
+                    "very_short": "Bid'a",
+                    "short": "Innovateur selon les hanbalites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est considéré comme une innovation selon les hanbalites, et ce n'est pas légalement permis, mais le divorce est valable. Le mari doit la reprendre et la divorcer dans un état de pureté."
+                }
+            },
+            "zahiri": {
+                "ar": {
+                    "very_short": "محرم",
+                    "short": "طلاق الحائض محرم عند الظاهرية، ويقع مع الإثم",
+                    "full": "طلاق الحائض محرم عند الظاهرية، استناداً إلى ظاهر النهي عن ذلك، ويقع الطلاق مع الإثم."
+                },
+                "en": {
+                    "very_short": "Forbidden",
+                    "short": "Forbidden according to Zahiris, but valid",
+                    "full": "Divorcing a menstruating woman is forbidden according to Zahiris, based on the literal prohibition, and the divorce is valid but sinful."
+                },
+                "fr": {
+                    "very_short": "Interdit",
+                    "short": "Interdit selon les zahirites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est interdit selon les zahirites, sur la base de l'interdiction littérale, et le divorce est valable mais le mari commet un péché."
+                }
+            },
+            "jafari": {
+                "ar": {
+                    "very_short": "جائز",
+                    "short": "طلاق الحائض جائز عند الجعفرية في زمن الغيبة",
+                    "full": "طلاق الحائض جائز عند الجعفرية، ولا يعتبر بدعة، لكنه مكروه ما لم يكن هناك ضرورة، وتعتبر العدة من يوم الطلاق."
+                },
+                "en": {
+                    "very_short": "Permissible",
+                    "short": "Permissible according to Ja'faris during the Occultation",
+                    "full": "Divorcing a menstruating woman is permissible according to Ja'faris, and it is not considered an innovation, though it is disliked unless there is a necessity. The waiting period is counted from the day of divorce."
+                },
+                "fr": {
+                    "very_short": "Permis",
+                    "short": "Permis selon les jaafarites durant l'Occultation",
+                    "full": "Divorcer une femme en période de menstrues est permis selon les jaafarites, et ce n'est pas considéré comme une innovation, bien que ce soit blâmable à moins qu'il n'y ait une nécessité. La période d'attente est comptée à partir du jour du divorce."
+                }
+            },
+            "zaidi": {
+                "ar": {
+                    "very_short": "بدعي",
+                    "short": "طلاق الحائض بدعي عند الزيدية، ويقع مع الإثم",
+                    "full": "طلاق الحائض بدعي عند الزيدية، ويقترب من رأي أهل السنة في حرمة ذلك، ويقع الطلاق مع الإثم."
+                },
+                "en": {
+                    "very_short": "Bid'ah",
+                    "short": "Innovative according to Zaidis, but valid",
+                    "full": "Divorcing a menstruating woman is considered an innovation according to Zaidis, and it is close to the Sunni view on its prohibition. The divorce is valid but sinful."
+                },
+                "fr": {
+                    "very_short": "Bid'a",
+                    "short": "Innovateur selon les zaydites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est considéré comme une innovation selon les zaydites, et cela est proche de l'avis sunnite sur son interdiction. Le divorce est valable mais le mari commet un péché."
+                }
+            },
+            "ibadi": {
+                "ar": {
+                    "very_short": "بدعي",
+                    "short": "طلاق الحائض بدعي عند الإباضية، ويقع مع الإثم",
+                    "full": "طلاق الحائض بدعي عند الإباضية، ولا يجوز شرعاً، لكنه يقع مع الإثم، ويجب على الزوج أن يراجعها إن كانت في العدة."
+                },
+                "en": {
+                    "very_short": "Bid'ah",
+                    "short": "Innovative according to Ibadis, but valid",
+                    "full": "Divorcing a menstruating woman is considered an innovation according to Ibadis, and it is not legally permissible, but it is still valid. The husband must take her back if she is still in her waiting period."
+                },
+                "fr": {
+                    "very_short": "Bid'a",
+                    "short": "Innovateur selon les ibadites, mais valable",
+                    "full": "Divorcer une femme en période de menstrues est considéré comme une innovation selon les ibadites, et ce n'est pas légalement permis, mais le divorce est valable. Le mari doit la reprendre si elle est encore dans sa période d'attente."
+                }
+            }
+        }
+    }
 ]
 
 # --- Glossary ---------------------------------------------------------------
