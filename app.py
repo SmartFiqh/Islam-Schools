@@ -1129,12 +1129,27 @@ def main():
     # الشعار
     st.markdown("""
     <div style="text-align:center; margin-bottom:-6px;">
-        <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="46" fill="#0f231c" stroke="#d4a854" stroke-width="3"/>
-            <path d="M50 28 C38 22 26 24 20 30 V66 C26 60 38 58 50 64 C62 58 74 60 80 66 V30 C74 24 62 22 50 28 Z"
-                  fill="none" stroke="#f2e6c9" stroke-width="3" stroke-linejoin="round"/>
-            <line x1="50" y1="28" x2="50" y2="64" stroke="#f2e6c9" stroke-width="2.5"/>
-            <path d="M66 20 A10 10 0 1 0 68 38 A8 8 0 1 1 66 20 Z" fill="#d4a854"/>
+        <svg width="88" height="88" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="56" fill="#0f231c" stroke="#d4a854" stroke-width="3"/>
+            <circle cx="60" cy="60" r="49" fill="none" stroke="#d4a854" stroke-width="0.75" opacity="0.5"/>
+
+            <!-- هلال -->
+            <path d="M78 20 A15 15 0 1 0 81 47 A11.5 11.5 0 1 1 78 20 Z" fill="#d4a854"/>
+
+            <!-- كتاب مفتوح -->
+            <path d="M60 50 C46 43 32 45 25 52 V90 C32 83 46 81 60 88 C74 81 88 83 95 90 V52 C88 45 74 43 60 50 Z"
+                  fill="none" stroke="#f2e6c9" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <line x1="60" y1="50" x2="60" y2="88" stroke="#f2e6c9" stroke-width="3"/>
+
+            <!-- سطور الصفحة اليسرى -->
+            <path d="M32 59 Q46 55 58 59" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
+            <path d="M32 67 Q46 63 58 67" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
+            <path d="M32 75 Q46 71 58 75" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
+
+            <!-- سطور الصفحة اليمنى -->
+            <path d="M62 59 Q74 55 88 59" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
+            <path d="M62 67 Q74 63 88 67" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
+            <path d="M62 75 Q74 71 88 75" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
         </svg>
     </div>
     """, unsafe_allow_html=True)
