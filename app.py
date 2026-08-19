@@ -160,6 +160,44 @@ def seed_initial_issues():
             "rulings_by_madhab_fa": "{}",
             "rulings_by_madhab_ms": "{}",
             "rulings_by_madhab_ur": "{}"
+        },
+        {
+            "topic": "muamalat",
+            "title_ar": "الربا", "title_en": "Riba (Usury/Interest)", "title_fr": "Riba (Usure/Intérêt)",
+            "title_fa": "ربا", "title_ms": "Riba", "title_ur": "سود (ربا)",
+            "keywords_ar": "ربا,حرام,قرض,فائدة,بنوك,معاملة",
+            "keywords_en": "riba,usury,forbidden,loan,interest,banks,transaction",
+            "keywords_fr": "riba,usure,interdit,prêt,intérêt,banques,transaction",
+            "keywords_fa": "ربا,حرام,قرض,سود,بانک,معامله",
+            "keywords_ms": "riba,haram,pinjaman,faedah,bank,muamalat",
+            "keywords_ur": "سود,ربا,حرام,قرض,بینک,معاملہ",
+            "ruling_vs_ar": "حرام", "ruling_s_ar": "الربا من كبائر الذنوب ومحرم قطعاً",
+            "ruling_f_ar": "الربا محرم بنص القرآن والسنة، وهو كل زيادة مشروطة في القرض أو المعاملة، سواء كانت نقدية أو عينية. الربا من السبع الموبقات.",
+            "ruling_vs_en": "Forbidden", "ruling_s_en": "Riba is a major sin and unequivocally forbidden",
+            "ruling_f_en": "Riba is forbidden by explicit Qur'anic and Prophetic text; it is any conditional increase in a loan or transaction, whether monetary or in kind. Riba is one of the seven destructive major sins.",
+            "ruling_vs_fr": "Interdit", "ruling_s_fr": "Le riba est un péché majeur et formellement interdit",
+            "ruling_f_fr": "Le riba est interdit par un texte explicite du Coran et de la Sunna ; c'est tout surplus conditionnel dans un prêt ou une transaction, monétaire ou en nature. Le riba fait partie des sept péchés capitaux destructeurs.",
+            "ruling_vs_fa": "حرام", "ruling_s_fa": "ربا از گناهان کبیره و قطعاً حرام است",
+            "ruling_f_fa": "ربا به نص قرآن و سنت حرام است، و آن هر افزایش مشروط در قرض یا معامله است، خواه نقدی باشد یا جنسی. ربا از هفت گناه کبیره است.",
+            "ruling_vs_ms": "Haram", "ruling_s_ms": "Riba tergolong dosa besar dan haram secara pasti",
+            "ruling_f_ms": "Riba diharamkan berdasarkan nas al-Quran dan sunnah; ia adalah sebarang tambahan bersyarat dalam pinjaman atau muamalat, sama ada berbentuk wang atau barangan. Riba termasuk salah satu daripada tujuh dosa besar.",
+            "ruling_vs_ur": "حرام", "ruling_s_ur": "سود کبیرہ گناہوں میں سے ہے اور قطعی طور پر حرام ہے",
+            "ruling_f_ur": "سود قرآن و سنت کی صریح نصوص سے حرام ہے، اور یہ قرض یا معاملے میں کوئی بھی مشروط اضافہ ہے، خواہ نقدی ہو یا جنسی۔ سود سات ہلاک کرنے والے کبیرہ گناہوں میں سے ایک ہے۔",
+            "rulings_by_madhab_ar": json.dumps({
+                "maliki": {"very_short": "حرام", "short": "حرام قطعاً، مع تفصيل معروف في الأصناف الستة الربوية", "full": "الربا محرم إجماعاً؛ وللمالكية تفصيل معروف في علة ربا الفضل ضمن الأصناف الستة الواردة في الحديث (الذهب، الفضة، البر، الشعير، التمر، الملح)."},
+                "shafii": {"very_short": "حرام", "short": "حرام قطعاً بنص القرآن والسنة", "full": "الربا محرم إجماعاً؛ ويُفرّق الشافعية بين ربا الفضل وربا النسيئة، مع ضوابط دقيقة في تحديد علة الربا في الأموال الربوية."},
+                "hanafi": {"very_short": "حرام", "short": "حرام قطعاً، مع توسع معروف في تطبيق العلة", "full": "الربا محرم إجماعاً؛ وللحنفية توسع معروف في تطبيق علة الربا على كل موزون أو مكيل من جنس واحد، أوسع من غيرهم."},
+                "hanbali": {"very_short": "حرام", "short": "حرام قطعاً، مع التزام صارم بظاهر النصوص", "full": "الربا محرم إجماعاً، ويتميز الحنابلة بالتزام صارم بظاهر الأحاديث الواردة في تحديد الأصناف الربوية."},
+                "zahiri": {"very_short": "حرام", "short": "حرام قطعاً، اقتصاراً على الأصناف الستة المنصوصة فقط", "full": "الربا محرم إجماعاً؛ ويقتصر الظاهرية على الأصناف الستة الواردة نصاً في الحديث دون قياس عليها لأصناف أخرى."},
+                "jafari": {"very_short": "حرام", "short": "حرام قطعاً، من كبائر الذنوب", "full": "الربا محرم إجماعاً ومن كبائر الذنوب عند الجعفرية؛ مع اجتهادات معاصرة حول بعض صور التعامل مع المصارف."},
+                "zaidi": {"very_short": "حرام", "short": "حرام قطعاً، قريب من رأي جمهور أهل السنة", "full": "الربا محرم إجماعاً، ويقترب الرأي الزيدي في تفاصيله من رأي جمهور أهل السنة."},
+                "ibadi": {"very_short": "حرام", "short": "حرام قطعاً بإجماع المذاهب", "full": "الربا محرم إجماعاً عند الإباضية كسائر المذاهب، بلا خلاف يُذكر في أصل التحريم."}
+            }),
+            "rulings_by_madhab_en": "{}",
+            "rulings_by_madhab_fr": "{}",
+            "rulings_by_madhab_fa": "{}",
+            "rulings_by_madhab_ms": "{}",
+            "rulings_by_madhab_ur": "{}"
         }
     ]
     for issue in issues:
