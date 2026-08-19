@@ -167,9 +167,11 @@ def load_issues(lang, topic_filter="all"):
                rulings_by_madhab_{lang_suffix}
         FROM issues
     '''
+    params = ()
     if topic_filter != "all":
-        query += f" WHERE topic = '{topic_filter}'"
-    c.execute(query)
+        query += " WHERE topic = ?"
+        params = (topic_filter,)
+    c.execute(query, params)
     rows = c.fetchall()
     conn.close()
     issues = []
@@ -227,7 +229,7 @@ def import_from_csv(csv_content):
     return count
 
 # =====================================================================
-# 3) SEMANTIC SEARCH (GEMINI)
+# 3) SEMANTIC SEARCH ضمن قاعدة البيانات (GEMINI)
 # =====================================================================
 def semantic_search(query, issues, lang):
     if not USE_GEMINI or not issues:
@@ -254,7 +256,58 @@ def semantic_search(query, issues, lang):
         return None
 
 # =====================================================================
-# 4) SEARCH LOGIC - MODIFIED TO ACCEPT T AND MADHHAB_NAMES
+# 3b) توليد إجابة حرة بالذكاء الاصطناعي عندما لا توجد مسألة مطابقة في
+#     قاعدة البيانات الموثقة. هذه الإجابات تُعرض دائماً موسومة بوضوح
+#     كمحتوى غير مُراجَع من عالم شرعي — وليست بديلاً عن قاعدة البيانات،
+#     بل حل احتياطي فقط عند عدم وجود تطابق.
+# =====================================================================
+def ai_generate_answer(question, lang, madhab_codes, level, T):
+    if not USE_GEMINI or not madhab_codes:
+        return None
+
+    madhab_list_str = ", ".join(f"{code} ({MADHHAB_NAMES[code][lang]})" for code in madhab_codes)
+    level_hint = {
+        "very_short": "كلمة أو كلمتين فقط",
+        "short": "سطر واحد مختصر",
+        "full": "فقرة قصيرة من سطرين إلى أربعة أسطر",
+    }.get(level, "سطر واحد مختصر")
+
+    prompt = f"""
+أنت مساعد بحثي متخصص في عرض آراء المذاهب الفقهية الإسلامية المعروفة والموثقة تاريخياً في كتب كل مذهب المعتمدة. أنت لا تُصدر فتوى شخصية، ولا تخترع رأياً غير موثق لمذهب معين.
+
+سؤال المستخدم: "{question}"
+
+المطلوب: لكل مذهب من المذاهب التالية، اذكر رأيه الفقهي المعروف (إن وُجد رأي موثق) في هذه المسألة تحديداً:
+{madhab_list_str}
+
+مستوى التفصيل المطلوب لكل إجابة: {level_hint}
+اكتب نص كل إجابة بلغة رمزها ISO: "{lang}"
+
+قاعدة صارمة: إن لم يكن هناك رأي معروف وموثق لمذهب معين في هذه المسألة تحديداً (خصوصاً في المسائل المستحدثة/المعاصرة التي لم يتناولها فقهاء المذهب الكلاسيكيون)، اكتب صراحة في تلك الحقلة أنه لا يوجد رأي موثق متاح، بدل اختلاق رأي أو تخمينه.
+
+أخرج النتيجة بصيغة JSON فقط، بلا أي نص أو شرح إضافي قبله أو بعده، وبهذا الشكل بالضبط (استخدم رموز المذاهب اللاتينية التالية حرفياً كمفاتيح): {{"maliki": "نص الإجابة", "shafii": "نص الإجابة"}}
+"""
+    try:
+        response = model.generate_content(prompt)
+        raw = response.text.strip()
+        json_start = raw.find("{")
+        json_end = raw.rfind("}") + 1
+        data = json.loads(raw[json_start:json_end])
+        cards = []
+        for code in madhab_codes:
+            answer = data.get(code)
+            if answer:
+                cards.append({
+                    "label": MADHHAB_NAMES[code][lang],
+                    "answer": answer,
+                    "note": T["ai_badge"],
+                })
+        return cards if cards else None
+    except Exception:
+        return None
+
+# =====================================================================
+# 4) SEARCH LOGIC (قاعدة البيانات الموثقة فقط)
 # =====================================================================
 def search_issues(query, topic_filter, madhabs, level, lang, T, MADHHAB_NAMES, TOPICS):
     if not query:
@@ -340,10 +393,14 @@ UI = {
         "answer_placeholder": "ستظهر الإجابة هنا بعد كتابة السؤال والضغط على زر البحث.",
         "no_question_warning": "الرجاء كتابة سؤالك أولاً في الفقرة الرابعة.",
         "no_madhab_warning": "الرجاء اختيار مذهب واحد على الأقل.",
-        "no_results_warning": "🔍 لم نجد مسألة بهذا الوصف ضمن الموضوع المختار. جرّب صياغة أخرى أو وسّع نطاق البحث.",
+        "no_results_warning": "🔍 لم نجد مسألة بهذا الوصف ضمن الموضوع المختار، وتعذّر توليد إجابة بالذكاء الاصطناعي. جرّب صياغة أخرى.",
         "signature": "هذا والله أعلم",
         "note_general": "رأي عام موحّد — لم يُفصّل بعد لكل مذهب",
         "note_madhab": "رأي المذهب {}",
+        "ai_badge": "🤖 إجابة الذكاء الاصطناعي",
+        "ai_disclaimer": "⚠️ هذه إجابة ولّدها الذكاء الاصطناعي تلقائياً لعدم وجود هذه المسألة في قاعدة البيانات الموثقة. إنها ليست فتوى ولم تُراجع من عالم شرعي؛ يُرجى التحقق من مصدر موثوق أو استشارة أهل العلم قبل العمل بها.",
+        "ai_generating": "🤖 جاري توليد إجابة بالذكاء الاصطناعي...",
+        "ai_unavailable": "ميزة الإجابة التلقائية بالذكاء الاصطناعي غير مفعّلة حالياً (لم يُضبط مفتاح Gemini API).",
         "expander_imams": "📜 الأئمة المؤسسون للمذاهب",
         "expander_countries": "🗺️ الدول الإسلامية والمذهب الرسمي السائد",
         "expander_glossary": "📚 مصطلحات فقهية رئيسية",
@@ -380,10 +437,14 @@ UI = {
         "answer_placeholder": "The answer will appear here after you type a question and press search.",
         "no_question_warning": "Please type your question first in section 4.",
         "no_madhab_warning": "Please select at least one school.",
-        "no_results_warning": "🔍 No matching issue was found in the selected topic. Try rephrasing or widen the topic.",
+        "no_results_warning": "🔍 No matching issue was found, and an AI answer could not be generated. Try rephrasing.",
         "signature": "And God knows best",
         "note_general": "A general, unified opinion — not yet detailed per school",
         "note_madhab": "Opinion of the {} school",
+        "ai_badge": "🤖 AI-generated answer",
+        "ai_disclaimer": "⚠️ This answer was generated automatically by AI because this issue isn't in the verified database yet. It is not a fatwa and has not been reviewed by a scholar; please verify with a trusted source or a qualified scholar before acting on it.",
+        "ai_generating": "🤖 Generating an AI answer...",
+        "ai_unavailable": "Automatic AI answering is currently disabled (no Gemini API key configured).",
         "expander_imams": "📜 The Founding Imams of the Schools",
         "expander_countries": "🗺️ Muslim-Majority Countries & Their Prevailing Official School",
         "expander_glossary": "📚 Key Juristic Terms",
@@ -420,10 +481,14 @@ UI = {
         "answer_placeholder": "La réponse apparaîtra ici après avoir écrit une question et appuyé sur rechercher.",
         "no_question_warning": "Veuillez d'abord écrire votre question à la section 4.",
         "no_madhab_warning": "Veuillez sélectionner au moins une école.",
-        "no_results_warning": "🔍 Aucune question correspondante trouvée dans le sujet choisi. Essayez une autre formulation ou élargissez le sujet.",
+        "no_results_warning": "🔍 Aucune question correspondante trouvée, et impossible de générer une réponse par IA. Essayez une autre formulation.",
         "signature": "Et Dieu est plus savant",
         "note_general": "Avis général unifié — pas encore détaillé par école",
         "note_madhab": "Avis de l'école {}",
+        "ai_badge": "🤖 Réponse générée par l'IA",
+        "ai_disclaimer": "⚠️ Cette réponse a été générée automatiquement par l'IA car cette question ne figure pas encore dans la base de données vérifiée. Ce n'est pas une fatwa et elle n'a pas été révisée par un érudit ; veuillez vérifier auprès d'une source fiable ou d'un savant qualifié avant d'agir en conséquence.",
+        "ai_generating": "🤖 Génération d'une réponse par IA...",
+        "ai_unavailable": "La réponse automatique par IA est actuellement désactivée (aucune clé API Gemini configurée).",
         "expander_imams": "📜 Les Imams Fondateurs des Écoles",
         "expander_countries": "🗺️ Pays à Majorité Musulmane et Leur École Officielle Dominante",
         "expander_glossary": "📚 Termes Juridiques Clés",
@@ -460,10 +525,14 @@ UI = {
         "answer_placeholder": "پاسخ پس از نوشتن سوال و کلیک روی جستجو نمایش داده می‌شود.",
         "no_question_warning": "لطفاً ابتدا سوال خود را در بخش ۴ بنویسید.",
         "no_madhab_warning": "لطفاً حداقل یک مذهب را انتخاب کنید.",
-        "no_results_warning": "🔍 هیچ مسئله‌ای با این توضیح در موضوع انتخاب‌شده یافت نشد. عبارت دیگری را امتحان کنید.",
+        "no_results_warning": "🔍 هیچ مسئله‌ای یافت نشد و تولید پاسخ با هوش مصنوعی ممکن نشد. عبارت دیگری را امتحان کنید.",
         "signature": "والله اعلم",
         "note_general": "نظر عمومی واحد — هنوز به‌تفکیک مذهب نیست",
         "note_madhab": "نظر مذهب {}",
+        "ai_badge": "🤖 پاسخ تولیدشده توسط هوش مصنوعی",
+        "ai_disclaimer": "⚠️ این پاسخ به‌طور خودکار توسط هوش مصنوعی تولید شده زیرا این مسئله هنوز در پایگاه داده تأییدشده موجود نیست. این فتوا نیست و توسط یک عالم دینی بررسی نشده است؛ لطفاً پیش از عمل به آن، از منبع معتبر یا عالم مختص استعلام کنید.",
+        "ai_generating": "🤖 در حال تولید پاسخ با هوش مصنوعی...",
+        "ai_unavailable": "پاسخ خودکار با هوش مصنوعی در حال حاضر غیرفعال است (کلید Gemini API تنظیم نشده است).",
         "expander_imams": "📜 ائمه مؤسس مذاهب",
         "expander_countries": "🗺️ کشورهای اسلامی و مذهب رسمی",
         "expander_glossary": "📚 اصطلاحات کلیدی فقهی",
@@ -500,10 +569,14 @@ UI = {
         "answer_placeholder": "Jawapan akan muncul di sini selepas anda menaip soalan dan menekan cari.",
         "no_question_warning": "Sila taip soalan anda terlebih dahulu di bahagian 4.",
         "no_madhab_warning": "Sila pilih sekurang-kurangnya satu mazhab.",
-        "no_results_warning": "🔍 Tiada isu sepadan ditemui dalam topik yang dipilih. Cuba kata kunci lain.",
+        "no_results_warning": "🔍 Tiada isu sepadan ditemui, dan jawapan AI tidak dapat dijana. Cuba kata kunci lain.",
         "signature": "Dan Allah lebih mengetahui",
         "note_general": "Pendapat umum yang disatukan — belum diperincikan mengikut mazhab",
         "note_madhab": "Pendapat mazhab {}",
+        "ai_badge": "🤖 Jawapan dijana oleh AI",
+        "ai_disclaimer": "⚠️ Jawapan ini dijana secara automatik oleh AI kerana isu ini belum terdapat dalam pangkalan data yang disahkan. Ia bukan fatwa dan belum disemak oleh ulama; sila sahkan dengan sumber yang dipercayai atau ulama yang berkelayakan sebelum bertindak berdasarkannya.",
+        "ai_generating": "🤖 Menjana jawapan AI...",
+        "ai_unavailable": "Jawapan automatik AI kini dinyahaktifkan (kunci API Gemini tidak ditetapkan).",
         "expander_imams": "📜 Imam Pengasas Mazhab",
         "expander_countries": "🗺️ Negara Islam & Mazhab Rasmi",
         "expander_glossary": "📚 Istilah Fiqh Utama",
@@ -540,10 +613,14 @@ UI = {
         "answer_placeholder": "جواب یہاں ظاہر ہوگا جب آپ سوال لکھیں گے اور تلاش پر کلک کریں گے۔",
         "no_question_warning": "براہ کرم پہلے حصہ ۴ میں اپنا سوال لکھیں۔",
         "no_madhab_warning": "براہ کرم کم از کم ایک مذہب منتخب کریں۔",
-        "no_results_warning": "🔍 منتخب موضوع میں اس تفصیل کا کوئی مسئلہ نہیں ملا۔ دوسرے الفاظ آزمائیں۔",
+        "no_results_warning": "🔍 کوئی مسئلہ نہیں ملا، اور AI جواب بھی تیار نہیں ہو سکا۔ دوسرے الفاظ آزمائیں۔",
         "signature": "واللہ اعلم",
         "note_general": "متفقہ عمومی رائے — ابھی تک مذہب کے لحاظ سے تفصیل نہیں دی گئی",
         "note_madhab": "مذہب {} کی رائے",
+        "ai_badge": "🤖 مصنوعی ذہانت سے تیار کردہ جواب",
+        "ai_disclaimer": "⚠️ یہ جواب خودکار طور پر AI نے تیار کیا ہے کیونکہ یہ مسئلہ ابھی تصدیق شدہ ڈیٹا بیس میں موجود نہیں۔ یہ فتویٰ نہیں ہے اور کسی عالم دین نے اس کا جائزہ نہیں لیا؛ براہ کرم عمل کرنے سے پہلے کسی معتبر ذریعہ یا اہل علم سے تصدیق کریں۔",
+        "ai_generating": "🤖 AI کے ذریعے جواب تیار کیا جا رہا ہے...",
+        "ai_unavailable": "خودکار AI جواب فی الحال غیر فعال ہے (Gemini API کلید مقرر نہیں کی گئی)۔",
         "expander_imams": "📜 مذاہب کے بانی ائمہ",
         "expander_countries": "🗺️ اسلامی ممالک اور سرکاری مذہب",
         "expander_glossary": "📚 اہم فقہی اصطلاحات",
@@ -688,6 +765,8 @@ def main():
     .answer-card h4 {{ margin: 0 0 6px 0; color: #1e3a2f; text-align: {align}; }}
     .answer-card .answer-text {{ font-size: 1.15rem; font-weight: 600; color: #16281f; margin: 4px 0; }}
     .answer-card .answer-note {{ font-size: 0.85rem; color: #6a7f78; }}
+    .answer-card.ai-card {{ border: 1px dashed #b08d3f; background: #fbf6ea; }}
+    .answer-card.ai-card .answer-note {{ color: #9c7a2e; font-weight: 600; }}
     .signature {{
         font-family: 'Brush Script MT', 'Segoe Script', cursive;
         font-style: italic; font-size: 1rem; color: #b08d3f;
@@ -733,11 +812,13 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
+    if not USE_GEMINI:
+        st.caption(f"ℹ️ {T['ai_unavailable']}")
+
     # استيراد CSV
     with st.expander("📥 استيراد مسائل من CSV (للمشرفين)", expanded=False):
         st.info("""
         **تنسيق CSV المطلوب:** يجب أن يحتوي على أعمدة: `topic, title_ar, title_en, title_fr, title_fa, title_ms, title_ur, keywords_ar, keywords_en, keywords_fr, keywords_fa, keywords_ms, keywords_ur, ruling_vs_ar, ruling_s_ar, ruling_f_ar, ...` (جميع الأعمدة التي في قاعدة البيانات).
-        يمكنك تنزيل ملف نموذجي من الرد السابق.
         """)
         uploaded = st.file_uploader("اختر ملف CSV", type=["csv"])
         if uploaded:
@@ -801,16 +882,31 @@ def main():
     if search_clicked and not selected_madhabs:
         st.warning(T["no_madhab_warning"])
     elif search_clicked and question:
-        # تمرير T, MADHHAB_NAMES, TOPICS إلى الدالة
         results = search_issues(question, topic, selected_madhabs, level, lang, T, MADHHAB_NAMES, TOPICS)
+        ai_used = False
+
+        # -------------------------------------------------------------
+        # إن لم توجد أي مسألة مطابقة في قاعدة البيانات الموثقة، نحاول
+        # توليد إجابة بالذكاء الاصطناعي بدل الاكتفاء برسالة "لا يوجد".
+        # -------------------------------------------------------------
+        if not results and USE_GEMINI:
+            with st.spinner(T["ai_generating"]):
+                ai_cards = ai_generate_answer(question, lang, selected_madhabs, level, T)
+            if ai_cards:
+                results = [{"title": question, "topic": TOPICS[topic][lang], "cards": ai_cards}]
+                ai_used = True
+
         if results:
+            if ai_used:
+                st.warning(T["ai_disclaimer"])
             for r in results:
                 st.markdown(f"**📌 {r['title']}** &nbsp;·&nbsp; _{r['topic']}_")
                 cols = st.columns(len(r["cards"])) if len(r["cards"]) > 1 else [st.container()]
                 for col, card in zip(cols, r["cards"]):
                     with col:
+                        card_class = "answer-card ai-card" if ai_used else "answer-card"
                         st.markdown(f"""
-                        <div class="answer-card">
+                        <div class="{card_class}">
                             <h4>{card['label']}</h4>
                             <div class="answer-text">{card['answer']}</div>
                             <div class="answer-note">{card['note']}</div>
@@ -819,6 +915,8 @@ def main():
                 st.markdown(f"<div class='signature'>{T['signature']}</div>", unsafe_allow_html=True)
         else:
             st.warning(T["no_results_warning"])
+            if not USE_GEMINI:
+                st.caption(T["ai_unavailable"])
     elif search_clicked:
         st.info(T["no_question_warning"])
     else:
@@ -867,8 +965,8 @@ def main():
             rating = st.feedback("stars")
             if rating is not None:
                 rating = rating + 1
-        except:
-            rating = st.radio(T["rating_label"], [1,2,3,4,5], format_func=lambda n: "⭐"*n, horizontal=True, label_visibility="collapsed")
+        except Exception:
+            rating = st.radio(T["rating_label"], [1, 2, 3, 4, 5], format_func=lambda n: "⭐" * n, horizontal=True, label_visibility="collapsed")
         comment_text = st.text_area(T["comment_placeholder"], placeholder=T["comment_placeholder"], label_visibility="collapsed")
         if st.button(T["comment_submit"]):
             if comment_text.strip():
