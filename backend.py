@@ -71,6 +71,12 @@ def logout():
 
 
 if __name__ == '__main__':
-    # debug=True مناسب فقط للتطوير المحلي — يفتح ثغرة تنفيذ كود عن بُعد
-    # (Werkzeug debugger) إن كان الخادم مكشوفاً على الشبكة. عطّله في الإنتاج.
-    app.run(debug=True, port=5000)
+    # ✅ إصلاح: أُطفئ وضع debug والـ reloader افتراضياً. كان debug=True
+    # يفتح ثغرة تنفيذ كود عن بُعد (Werkzeug debugger) لو انكشف الخادم
+    # على الشبكة، كما أن Werkzeug's reloader (المفعّل تلقائياً مع
+    # debug=True) يُعيد استنساخ العملية (fork) لمراقبة التغييرات —
+    # وهذا يتعارض مع تشغيله كعملية فرعية تلقائية من app.py. للتطوير
+    # المحلي مع إعادة التحميل التلقائي، شغّل الملف يدوياً بدلاً من
+    # الاعتماد على الإطلاق التلقائي: FLASK_DEBUG=1 python backend.py
+    debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+    app.run(host='127.0.0.1', port=5000, debug=debug_mode, use_reloader=False)
