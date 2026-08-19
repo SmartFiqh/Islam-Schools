@@ -74,10 +74,6 @@ def init_db():
 def seed_initial_issues():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM issues")
-    if c.fetchone()[0] > 0:
-        conn.close()
-        return
 
     issues = [
         {
@@ -126,9 +122,50 @@ def seed_initial_issues():
             "rulings_by_madhab_fa": "{}",
             "rulings_by_madhab_ms": "{}",
             "rulings_by_madhab_ur": "{}"
+        },
+        {
+            "topic": "ibadat",
+            "title_ar": "صلاة الجنازة", "title_en": "The Funeral Prayer", "title_fr": "La prière funéraire",
+            "title_fa": "نماز جنازه", "title_ms": "Solat Jenazah", "title_ur": "نماز جنازہ",
+            "keywords_ar": "جنازة,ميت,دفن,صلاة,تكبيرات,فرض كفاية",
+            "keywords_en": "funeral,death,burial,prayer,takbir,fard kifayah",
+            "keywords_fr": "funérailles,mort,enterrement,prière,takbir,fard kifayah",
+            "keywords_fa": "جنازه,مرگ,دفن,نماز,تکبیر,فرض کفایه",
+            "keywords_ms": "jenazah,kematian,pengebumian,solat,takbir,fardu kifayah",
+            "keywords_ur": "جنازہ,موت,تدفین,نماز,تکبیر,فرض کفایہ",
+            "ruling_vs_ar": "فرض كفاية", "ruling_s_ar": "فرض كفاية على المسلمين، تسقط بفعل البعض",
+            "ruling_f_ar": "صلاة الجنازة فرض كفاية عند جمهور الفقهاء؛ إذا قام بها من يكفي سقط الإثم عن الباقين، وإذا تركها الجميع أثم الجميع. وهي صلاة بلا ركوع ولا سجود، تُؤدى قياماً بعدد من التكبيرات يتفاوت بين المذاهب (أربع تكبيرات عند جمهور أهل السنة، وخمس عند الجعفرية).",
+            "ruling_vs_en": "Fard Kifayah", "ruling_s_en": "A collective obligation on Muslims, waived if some perform it",
+            "ruling_f_en": "The funeral prayer is a collective obligation (fard kifayah) according to the majority of jurists: if enough people perform it, the sin is lifted from the rest, but if everyone abandons it, all are sinful. It has no bowing or prostration — only standing with a number of takbirs that varies by school (four for most Sunni schools, five for the Ja'fari school).",
+            "ruling_vs_fr": "Fard Kifayah", "ruling_s_fr": "Obligation collective, levée si certains l'accomplissent",
+            "ruling_f_fr": "La prière funéraire est une obligation collective (fard kifayah) selon la majorité des juristes : si un nombre suffisant de personnes l'accomplit, le péché est levé pour les autres, mais si tous l'abandonnent, tous sont fautifs. Elle ne comporte ni inclinaison ni prosternation — seulement une position debout avec un nombre de takbirs qui varie selon l'école (quatre pour la plupart des écoles sunnites, cinq pour l'école jaafarite).",
+            "ruling_vs_fa": "فرض کفایه", "ruling_s_fa": "واجب کفایی بر مسلمانان، با انجام برخی ساقط می‌شود",
+            "ruling_f_fa": "نماز جنازه نزد اکثر فقها فرض کفایه است: اگر عده کافی آن را برگزار کنند، گناه از دیگران ساقط می‌شود، ولی اگر همه ترک کنند همه گناهکارند. این نماز بدون رکوع و سجده است و فقط ایستاده با تعدادی تکبیر برگزار می‌شود که بین مذاهب متفاوت است (چهار تکبیر نزد اکثر مذاهب اهل سنت، پنج تکبیر نزد مذهب جعفری).",
+            "ruling_vs_ms": "Fardu Kifayah", "ruling_s_ms": "Kewajipan kolektif ke atas umat Islam, gugur jika sebahagian melaksanakannya",
+            "ruling_f_ms": "Solat jenazah adalah fardu kifayah menurut majoriti fuqaha: jika sebilangan orang melaksanakannya, dosa gugur bagi yang lain, tetapi jika semua meninggalkannya, semua berdosa. Solat ini tiada rukuk atau sujud — hanya berdiri dengan beberapa takbir yang berbeza mengikut mazhab (empat takbir bagi kebanyakan mazhab Sunni, lima takbir bagi mazhab Jaafari).",
+            "ruling_vs_ur": "فرض کفایہ", "ruling_s_ur": "مسلمانوں پر اجتماعی فرض، بعض کے ادا کرنے سے ساقط ہو جاتا ہے",
+            "ruling_f_ur": "نماز جنازہ جمہور فقہاء کے نزدیک فرض کفایہ ہے: اگر کافی تعداد ادا کر لے تو باقیوں سے گناہ ساقط ہو جاتا ہے، اور اگر سب چھوڑ دیں تو سب گنہگار ہوں گے۔ اس نماز میں رکوع و سجدہ نہیں ہوتا — صرف قیام کی حالت میں چند تکبیریں ہوتی ہیں جن کی تعداد مذاہب کے درمیان مختلف ہے (جمہور اہل سنت کے نزدیک چار تکبیریں، جعفری مذہب کے نزدیک پانچ)۔",
+            "rulings_by_madhab_ar": json.dumps({
+                "maliki": {"very_short": "فرض كفاية", "short": "فرض كفاية، تُؤدى بأربع تكبيرات", "full": "فرض كفاية على المسلمين، تُؤدى بأربع تكبيرات دون ركوع أو سجود، ويُدعى فيها للميت بعد كل تكبيرة."},
+                "shafii": {"very_short": "فرض كفاية", "short": "فرض كفاية بأربع تكبيرات، تُقرأ الفاتحة بعد الأولى", "full": "فرض كفاية بأربع تكبيرات؛ تُقرأ بعد التكبيرة الأولى الفاتحة، وبعد الثانية الصلاة على النبي ﷺ، وبعد الثالثة الدعاء للميت."},
+                "hanafi": {"very_short": "فرض كفاية", "short": "فرض كفاية بأربع تكبيرات دون قراءة الفاتحة", "full": "فرض كفاية بأربع تكبيرات، ولا تُقرأ فيها الفاتحة عند الحنفية بل يُكتفى بالثناء والدعاء بعد كل تكبيرة."},
+                "hanbali": {"very_short": "فرض كفاية", "short": "فرض كفاية بأربع تكبيرات، مع قراءة الفاتحة", "full": "فرض كفاية بأربع تكبيرات، تُقرأ بعد الأولى الفاتحة سراً، ثم الصلاة على النبي ﷺ، ثم الدعاء للميت."},
+                "zahiri": {"very_short": "فرض كفاية", "short": "فرض كفاية أخذاً بظاهر الأحاديث الواردة", "full": "فرض كفاية أخذاً بظاهر الأحاديث الواردة عن النبي ﷺ في صفتها، دون زيادة عليها أو قياس."},
+                "jafari": {"very_short": "واجب كفائي", "short": "واجب كفائي بخمس تكبيرات دون ركوع أو سجود", "full": "واجب كفائي على المسلمين؛ تُؤدى بخمس تكبيرات، يتخللها الشهادتان والصلاة على النبي وآله والدعاء للمؤمنين والميت، دون ركوع أو سجود."},
+                "zaidi": {"very_short": "فرض كفاية", "short": "قريب من الرأي السني، غالباً بأربع تكبيرات", "full": "فرض كفاية، ويقترب الرأي الزيدي في صفتها من الرأي السني، وتُؤدى غالباً بأربع تكبيرات."},
+                "ibadi": {"very_short": "فرض كفاية", "short": "فرض كفاية دون ركوع أو سجود", "full": "فرض كفاية على المسلمين، تُؤدى قياماً دون ركوع أو سجود، بعدد من التكبيرات يقارب المعروف عند جمهور المذاهب."}
+            }),
+            "rulings_by_madhab_en": "{}",
+            "rulings_by_madhab_fr": "{}",
+            "rulings_by_madhab_fa": "{}",
+            "rulings_by_madhab_ms": "{}",
+            "rulings_by_madhab_ur": "{}"
         }
     ]
     for issue in issues:
+        c.execute("SELECT COUNT(*) FROM issues WHERE title_ar = ?", (issue["title_ar"],))
+        if c.fetchone()[0] > 0:
+            continue  # موجودة مسبقاً — لا تُضاف مرة أخرى (يمنع التكرار عند إعادة التشغيل)
         c.execute('''
             INSERT INTO issues (
                 topic, title_ar, title_en, title_fr, title_fa, title_ms, title_ur,
