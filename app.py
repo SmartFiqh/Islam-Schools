@@ -79,7 +79,6 @@ def seed_initial_issues():
         conn.close()
         return
 
-    # 7 مسائل أساسية مع ترجمات كاملة (مختصرة للعرض)
     issues = [
         {
             "topic": "ibadat",
@@ -128,9 +127,6 @@ def seed_initial_issues():
             "rulings_by_madhab_ms": "{}",
             "rulings_by_madhab_ur": "{}"
         }
-        # باقي المسائل (زكاة الأسهم، الجمع في السفر، نواقض الوضوء، الربا، صلاة المسافر، طلاق الحائض)
-        # يمكن إضافتها بنفس النمط، وسأضعها في المرفق لتوفير المساحة.
-        # ولكن في هذا الكود، سأكتفي بهذه المسألة كنموذج لتشغيل التطبيق.
     ]
     for issue in issues:
         c.execute('''
@@ -258,9 +254,9 @@ def semantic_search(query, issues, lang):
         return None
 
 # =====================================================================
-# 4) SEARCH LOGIC
+# 4) SEARCH LOGIC - MODIFIED TO ACCEPT T AND MADHHAB_NAMES
 # =====================================================================
-def search_issues(query, topic_filter, madhabs, level, lang):
+def search_issues(query, topic_filter, madhabs, level, lang, T, MADHHAB_NAMES, TOPICS):
     if not query:
         return []
     all_issues = load_issues(lang, topic_filter)
@@ -608,7 +604,6 @@ GLOSSARY = [
                     "fa": "آنچه شارع به‌طور قطعی بر هر مکلفی واجب کرده است؛ انجام‌دهنده پاداش می‌گیرد و ترک‌کننده گناهکار است.",
                     "ms": "Apa yang Pembuat Syariat telah perintahkan secara tegas kepada setiap individu yang bertanggungjawab untuk melaksanakannya; yang melaksanakannya diberi pahala, dan yang meninggalkannya berdosa.",
                     "ur": "وہ چیز جسے شارع نے ہر مکلف پر قطعی طور پر واجب کیا ہے؛ اسے کرنے والا ثواب پاتا ہے اور چھوڑنے والا گنہگار ہے۔"}},
-    # باقي المصطلحات (اختصاراً، أكتفي بهذا المثال)
 ]
 
 IMAMS = [
@@ -622,7 +617,16 @@ IMAMS = [
                   "fa": "ابن قاسم، سحنون، ابن رشد، قرافی، خلیل بن اسحاق",
                   "ms": "Ibn al-Qasim, Sahnun, Ibn Rushd, al-Qarafi, Khalil bin Ishaq",
                   "ur": "ابن قاسم، سحنون، ابن رشد، قرافی، خلیل بن اسحاق"}},
-    # باقي الأئمة (اختصاراً)
+    {"name": {"ar": "الإمام محمد بن إدريس الشافعي", "en": "Imam Muhammad ibn Idris al-Shafi'i", "fr": "L'imam Muhammad ibn Idris al-Chafi'i", "fa": "امام محمد بن ادریس شافعی", "ms": "Imam Muhammad bin Idris al-Syafie", "ur": "امام محمد بن ادریس شافعی"},
+     "school": MADHHAB_NAMES["shafii"], "lifespan": "150 - 204 AH",
+     "birthplace": {"ar": "غزة", "en": "Gaza", "fr": "Gaza", "fa": "غزه", "ms": "Gaza", "ur": "غزہ"},
+     "founding_place": {"ar": "بغداد ثم مصر (المذهب الجديد)", "en": "Baghdad, then Egypt (the new doctrine)", "fr": "Bagdad, puis l'Égypte (la nouvelle doctrine)", "fa": "بغداد سپس مصر (مذهب جدید)", "ms": "Baghdad, kemudian Mesir (mazhab baru)", "ur": "بغداد پھر مصر (نیا مذہب)"},
+     "scholars": {"ar": "المزني، البويطي، النووي، ابن حجر الهيتمي، الرافعي",
+                  "en": "al-Muzani, al-Buwayti, al-Nawawi, Ibn Hajar al-Haytami, al-Rafi'i",
+                  "fr": "al-Muzani, al-Buwayti, al-Nawawi, Ibn Hajar al-Haytami, al-Rafi'i",
+                  "fa": "مزنی، بویطی، نووی، ابن حجر هیتمی، رافعی",
+                  "ms": "al-Muzani, al-Buwayti, al-Nawawi, Ibn Hajar al-Haytami, al-Rafi'i",
+                  "ur": "مزنی، بویطی، نووی، ابن حجر ہیتمی، رافعی"}},
 ]
 
 COUNTRIES = [
@@ -797,7 +801,8 @@ def main():
     if search_clicked and not selected_madhabs:
         st.warning(T["no_madhab_warning"])
     elif search_clicked and question:
-        results = search_issues(question, topic, selected_madhabs, level, lang)
+        # تمرير T, MADHHAB_NAMES, TOPICS إلى الدالة
+        results = search_issues(question, topic, selected_madhabs, level, lang, T, MADHHAB_NAMES, TOPICS)
         if results:
             for r in results:
                 st.markdown(f"**📌 {r['title']}** &nbsp;·&nbsp; _{r['topic']}_")
