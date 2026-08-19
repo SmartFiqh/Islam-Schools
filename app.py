@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import json
 
 # إعدادات الخادم الخلفي
 BACKEND_URL = "http://localhost:5000"  # غيّر هذا في الإنتاج
@@ -17,6 +16,27 @@ st.set_page_config(
 
 st.title("🔐 تطبيق Pi Network - مصادقة متكاملة")
 
+# ==========================================================
+# ✅ إصلاح: استقبال uid من الرابط بعد المصادقة، والتحقق منه
+# من الخادم الخلفي مباشرة (بدلاً من الوثوق ببيانات JSON قادمة
+# من المتصفح مباشرة، والتي كان يمكن لأي شخص تلفيقها يدوياً في
+# الرابط والدخول بهوية مزوّرة).
+# ==========================================================
+params = st.query_params
+if 'pi_uid' in params and not st.session_state.pi_user:
+    uid = params['pi_uid']
+    try:
+        resp = requests.get(f"{BACKEND_URL}/pi-user/{uid}", timeout=10)
+        if resp.status_code == 200:
+            st.session_state.pi_user = resp.json()
+        else:
+            st.error("تعذّر التحقق من هوية المستخدم من الخادم الخلفي. حاول تسجيل الدخول مرة أخرى.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"تعذّر الاتصال بالخادم الخلفي: {e}")
+    finally:
+        st.query_params.clear()
+        st.rerun()
+
 # عرض حالة المستخدم
 if st.session_state.pi_user:
     st.success(f"✅ مرحباً {st.session_state.pi_user.get('username', 'مستخدم')} (UID: {st.session_state.pi_user.get('uid', 'N/A')})")
@@ -27,9 +47,12 @@ else:
     st.info("👋 لم تقم بتسجيل الدخول بعد. استخدم زر تسجيل الدخول أدناه.")
 
 # ==========================================================
-# تضمين واجهة HTML/JS لمصادقة Pi
+# تضمين واجهة HTML/JS لمصادقة Pi — تُعرض فقط إن لم يكن المستخدم
+# مسجلاً دخوله بعد (✅ إصلاح: كانت تُعرض دائماً حتى بعد تسجيل
+# الدخول، فتُعيد تشغيل نافذة Pi في كل مرة يُعاد فيها رسم الصفحة).
 # ==========================================================
-html_code = """
+if not st.session_state.pi_user:
+    html_code = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,24 +72,18 @@ html_code = """
     <button id="signInBtn" style="display:none;">🔑 تسجيل الدخول عبر Pi Network</button>
 
     <script>
-        const BACKEND_URL = "http://localhost:5000";  // يجب أن يتطابق مع عنوان الخادم الخلفي
+        const BACKEND_URL = "__BACKEND_URL__";  // يُحقن من Python أدناه لضمان تطابقه دائماً
 
-        // دالة للتعامل مع المدفوعات غير المكتملة (مطلوبة لكننا لا نستخدمها)
         function onIncompletePaymentFound(payment) {
             console.log('دفعة غير مكتملة:', payment);
-            // يمكنك معالجتها إذا كنت تستخدم المدفوعات
         }
 
-        // تشغيل المصادقة تلقائياً عند تحميل الصفحة
         window.addEventListener('load', async function() {
             try {
-                // 1. تهيئة Pi SDK (sandbox: true للتطوير)
                 await Pi.init({ version: '2.0', sandbox: true });
 
-                // 2. استدعاء المصادقة
                 const auth = await Pi.authenticate(['username'], onIncompletePaymentFound);
 
-                // 3. إرسال التوكن إلى الخادم الخلفي
                 const response = await fetch(BACKEND_URL + '/pi-auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -75,16 +92,24 @@ html_code = """
 
                 if (response.ok) {
                     const data = await response.json();
-                    // تحديث واجهة Streamlit عبر إعادة التحميل مع تمرير بيانات المستخدم
-                    // نستخدم window.parent.postMessage لإرسال البيانات إلى Streamlit
-                    window.parent.postMessage({
-                        type: 'pi_auth_success',
-                        user: data.user
-                    }, '*');
+                    const uid = data.user && data.user.uid;
+
+                    if (!uid) {
+                        document.getElementById('status').innerHTML = '❌ لم يُعِد الخادم الخلفي معرّف مستخدم صالح.';
+                        document.getElementById('signInBtn').style.display = 'inline-block';
+                        return;
+                    }
+
                     document.getElementById('status').innerHTML = '✅ تم تسجيل الدخول بنجاح! جاري تحديث الصفحة...';
                     document.getElementById('signInBtn').style.display = 'none';
-                    // إعادة تحميل الصفحة بعد لحظة
-                    setTimeout(() => { window.location.reload(); }, 1500);
+
+                    // ✅ إصلاح: نُعيد توجيه الصفحة الأصلية (وليس الإطار المضمّن
+                    // فقط) بمعرّف uid حصراً، ليقوم Streamlit بالتحقق منه من
+                    // الخادم الخلفي بنفسه بدل الوثوق بأي بيانات من المتصفح.
+                    setTimeout(function () {
+                        window.parent.location.href =
+                            window.parent.location.pathname + '?pi_uid=' + encodeURIComponent(uid);
+                    }, 800);
                 } else {
                     const err = await response.json();
                     document.getElementById('status').innerHTML = '❌ فشل التحقق من التوكن: ' + (err.error || 'خطأ غير معروف');
@@ -97,46 +122,25 @@ html_code = """
             }
         });
 
-        // زر تسجيل الدخول اليدوي
         document.getElementById('signInBtn')?.addEventListener('click', function() {
-            window.location.reload();  // إعادة تحميل الصفحة لتشغيل المصادقة مرة أخرى
+            window.location.reload();
         });
     </script>
 </body>
 </html>
 """
-
-# عرض HTML في Streamlit
-st.components.v1.html(html_code, height=300)
-
-# استقبال بيانات المستخدم من JavaScript (عبر استعلام أو session)
-# في هذه النسخة، نعتمد على إعادة تحميل الصفحة بعد المصادقة.
-# بدلاً من ذلك، يمكنك استخدام st.query_params أو st.session_state.
-
-# إذا تم تمرير بيانات المستخدم عبر query params (اختياري)
-params = st.query_params
-if 'pi_user' in params:
-    try:
-        user = json.loads(params['pi_user'])
-        st.session_state.pi_user = user
-        # إزالة المعامل من الرابط
-        st.query_params.clear()
-        st.rerun()
-    except:
-        pass
+    html_code = html_code.replace("__BACKEND_URL__", BACKEND_URL)
+    st.components.v1.html(html_code, height=300)
 
 # عرض معلومات إضافية بعد تسجيل الدخول
 if st.session_state.pi_user:
     st.subheader("📋 معلومات حسابك")
     st.json(st.session_state.pi_user)
 
-    # يمكنك إضافة المزيد من الميزات هنا (مثل عرض محتوى خاص)
     st.markdown("---")
     st.markdown("✨ هذا هو المحتوى الحصري للمستخدمين المسجلين.")
 else:
-    # عرض محتوى عام
     st.markdown("📢 قم بتسجيل الدخول لعرض محتوى مخصص.")
 
-# تشغيل الخادم الخلفي (للاستخدام المحلي فقط)
 if __name__ == "__main__":
     st.write("🔧 تأكد من تشغيل الخادم الخلفي: python backend.py")
