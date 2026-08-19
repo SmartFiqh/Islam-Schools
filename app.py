@@ -1,8 +1,52 @@
 import streamlit as st
 import requests
+import subprocess
+import sys
+import os
+import time
 
 # إعدادات الخادم الخلفي
-BACKEND_URL = "http://localhost:5000"  # غيّر هذا في الإنتاج
+BACKEND_URL = "http://localhost:5000"  # غيّر هذا في الإنتاج إن نُشر الخادم بشكل مستقل
+
+# ==========================================================
+# ✅ إصلاح جذري: تشغيل الخادم الخلفي تلقائياً في عملية خلفية
+# بدل الاعتماد على تشغيل `python backend.py` يدوياً في طرفية
+# منفصلة. هذا يحل المشكلة سواء كنت تُشغّل التطبيق محلياً (ونسيت
+# فتح طرفية ثانية) أو على استضافة سحابية بعملية واحدة فقط مثل
+# Streamlit Community Cloud (حيث لا توجد طرفية أصلاً لتشغيل خادم
+# منفصل، لكن العمليتين هنا تعملان داخل نفس الحاوية فيعمل
+# localhost بينهما بشكل طبيعي).
+#
+# @st.cache_resource يضمن تشغيل هذا مرة واحدة فقط طوال عمر
+# التطبيق، وليس في كل إعادة رسم (rerun).
+# ==========================================================
+@st.cache_resource
+def start_backend_once():
+    backend_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend.py")
+    if not os.path.exists(backend_path):
+        return {"started": False, "error": f"لم يُعثر على backend.py في {backend_path}"}
+    try:
+        subprocess.Popen(
+            [sys.executable, backend_path],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception as e:
+        return {"started": False, "error": str(e)}
+
+    # الانتظار حتى يصبح الخادم جاهزاً فعلياً بدل افتراض جهوزيته فوراً
+    for _ in range(20):  # حتى ~10 ثوانٍ كحد أقصى
+        try:
+            r = requests.get(f"{BACKEND_URL}/health", timeout=0.5)
+            if r.status_code == 200:
+                return {"started": True, "error": None}
+        except requests.exceptions.RequestException:
+            pass
+        time.sleep(0.5)
+    return {"started": False, "error": "بدأت العملية لكن الخادم لم يستجب خلال 10 ثوانٍ"}
+
+
+backend_status = start_backend_once()
 
 # تهيئة حالة الجلسة
 if 'pi_user' not in st.session_state:
@@ -16,13 +60,20 @@ st.set_page_config(
 
 st.title("🔐 تطبيق Pi Network - مصادقة متكاملة")
 
+if not backend_status["started"]:
+    st.error(
+        f"❌ تعذّر تشغيل الخادم الخلفي تلقائياً: {backend_status['error']}\n\n"
+        "يمكنك تشغيله يدوياً في طرفية منفصلة كحل بديل: `python backend.py`"
+    )
+
 # ==========================================================
 # ✅ فحص اتصال يظهر في الصفحة الرئيسية مباشرة (وليس داخل الإطار
 # المضمّن)، ليكون واضحاً فوراً هل الخادم الخلفي يعمل أصلاً أم لا،
 # بدل الاعتماد على أخطاء مخفية داخل الـ iframe لا تظهر عند نسخ نص
 # الصفحة.
 # ==========================================================
-with st.expander("🔧 فحص الاتصال بالخادم الخلفي", expanded=(st.session_state.pi_user is None)):
+with st.expander("🔧 فحص الاتصال بالخادم الخلفي", expanded=(not backend_status["started"])):
+    st.caption("الخادم الخلفي يُشغَّل تلقائياً الآن مع بدء التطبيق. استخدم هذا الفحص فقط للتأكد أو استكشاف الأخطاء.")
     if st.button("فحص الآن"):
         try:
             health_resp = requests.get(f"{BACKEND_URL}/health", timeout=5)
