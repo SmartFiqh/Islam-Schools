@@ -1,22 +1,96 @@
-# save as seed_db.py
-import sqlite3
-import json
+import csv
+import re
 
-DB_PATH = "fiqh.db"
+def fix_csv_quoting(input_file, output_file):
+    """
+    إصلاح أخطاء الاقتباس في ملف CSV (Illegal quoting)
+    """
+    with open(input_file, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
 
-def force_seed():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    # حذف كل المسائل الحالية
-    c.execute("DELETE FROM issues")
-    # إدراج مسألة واحدة على الأقل للتجربة
-    c.execute('''
-        INSERT INTO issues (topic, title_ar, keywords_ar, ruling_vs_ar, ruling_s_ar, ruling_f_ar)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', ("ibadat", "صلاة الجماعة", "جماعة,مسجد,صلاة", "سنة مؤكدة", "سنة مؤكدة عند الجمهور", "تجب صلاة الجماعة في المسجد على الرجال عند جمهور الفقهاء."))
-    conn.commit()
-    conn.close()
-    print("✅ تم إدراج مسألة تجريبية.")
+    fixed_lines = []
+    in_quoted_field = False
+    current_line = ""
 
+    for line in lines:
+        line = line.rstrip('\n')
+        # حساب عدد علامات الاقتباس المزدوجة في السطر
+        quote_count = line.count('"')
+        
+        # إذا كان عدد الاقتباسات فردياً، فهذا يعني أن حقل مقتبس يمتد لعدة أسطر
+        if quote_count % 2 != 0:
+            in_quoted_field = not in_quoted_field
+            current_line += line + "\n"
+            continue
+        
+        if in_quoted_field:
+            current_line += line + "\n"
+            # ننتظر حتى ينتهي الحقل المفتوح
+            continue
+        
+        # إذا كان السطر طبيعياً
+        if current_line:
+            full_line = current_line + line
+            current_line = ""
+        else:
+            full_line = line
+        
+        # إصلاح الاقتباسات المزدوجة داخل الحقول
+        # نستبدل "" بـ " (للتعامل مع الاقتباسات المزدوجة المكررة)
+        full_line = full_line.replace('""', '"')
+        
+        # التأكد من أن كل حقل محاط بعلامات اقتباس عند الحاجة
+        # نقوم بتقسيم السطر إلى أعمدة
+        parts = full_line.split(',')
+        new_parts = []
+        for part in parts:
+            part = part.strip()
+            # إذا كان الحقل يحتوي على فاصلة أو علامات اقتباس، نضعه بين علامات اقتباس
+            if ',' in part or '"' in part:
+                if not (part.startswith('"') and part.endswith('"')):
+                    part = f'"{part}"'
+            new_parts.append(part)
+        
+        fixed_lines.append(','.join(new_parts))
+
+    # كتابة الملف المُصلح
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(fixed_lines))
+    
+    print(f"✅ تم إصلاح الملف وحفظه باسم: {output_file}")
+    print(f"📊 عدد الأسطر المعالجة: {len(fixed_lines)}")
+
+def validate_csv(file_path):
+    """
+    التحقق من صحة ملف CSV
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            header = next(reader)
+            print(f"✅ رأس الملف: {header[:5]}...")
+            row_count = 0
+            for row in reader:
+                row_count += 1
+                if len(row) != len(header):
+                    print(f"⚠️ تحذير: السطر {row_count+1} يحتوي على {len(row)} عمود بدلاً من {len(header)}")
+            print(f"✅ عدد الصفوف: {row_count}")
+            return True
+    except Exception as e:
+        print(f"❌ خطأ في التحقق: {e}")
+        return False
+
+# =====================================================================
+# تشغيل السكربت
+# =====================================================================
 if __name__ == "__main__":
-    force_seed()
+    input_file = "issues_import.csv"   # اسم الملف الأصلي
+    output_file = "issues_import_fixed.csv"  # الملف المُصلح
+    
+    print("🔧 بدء إصلاح ملف CSV...")
+    fix_csv_quoting(input_file, output_file)
+    
+    print("\n🔍 التحقق من الملف المُصلح...")
+    validate_csv(output_file)
+    
+    print(f"\n📥 يمكنك الآن استيراد الملف '{output_file}' في التطبيق.")
