@@ -5,6 +5,8 @@ import json
 import os
 import csv
 import io
+import datetime  # ✅ added for timestamps
+import numpy as np
 
 # =====================================================================
 # 0) استيراد المكتبات الاختيارية بأمان
@@ -52,6 +54,7 @@ DB_PATH = "fiqh.db"
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+    # جدول المسائل الفقهية الرئيسي
     c.execute('''
         CREATE TABLE IF NOT EXISTS issues (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,9 +71,7 @@ def init_db():
             rulings_by_madhab_fa JSON, rulings_by_madhab_ms JSON, rulings_by_madhab_ur JSON
         )
     ''')
-    # جدول المراجع المرفوعة (RAG) — نصوص مصدرية يرفعها المشرف، تُقسّم
-    # إلى مقاطع (chunks) ويُخزَّن تمثيلها الرقمي (embedding) لكل مقطع
-    # لاسترجاع الأقرب دلالياً لسؤال المستخدم بسرعة عند البحث.
+    # جدول المراجع المرفوعة (RAG)
     c.execute('''
         CREATE TABLE IF NOT EXISTS reference_chunks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,6 +82,21 @@ def init_db():
             added_at TEXT
         )
     ''')
+    conn.commit()
+    conn.close()
+
+def ensure_reference_table():
+    """تأكد من وجود الأعمدة المطلوبة في جدول reference_chunks (للترقية من إصدارات سابقة)"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("PRAGMA table_info(reference_chunks)")
+    columns = [col[1] for col in c.fetchall()]
+    if 'source_title' not in columns:
+        c.execute("ALTER TABLE reference_chunks ADD COLUMN source_title TEXT")
+    if 'madhab_tag' not in columns:
+        c.execute("ALTER TABLE reference_chunks ADD COLUMN madhab_tag TEXT")
+    if 'added_at' not in columns:
+        c.execute("ALTER TABLE reference_chunks ADD COLUMN added_at TEXT")
     conn.commit()
     conn.close()
 
@@ -216,7 +232,7 @@ def seed_initial_issues():
     for issue in issues:
         c.execute("SELECT COUNT(*) FROM issues WHERE title_ar = ?", (issue["title_ar"],))
         if c.fetchone()[0] > 0:
-            continue  # موجودة مسبقاً — لا تُضاف مرة أخرى (يمنع التكرار عند إعادة التشغيل)
+            continue  # موجودة مسبقاً — لا تُضاف مرة أخرى
         c.execute('''
             INSERT INTO issues (
                 topic, title_ar, title_en, title_fr, title_fa, title_ms, title_ur,
@@ -318,16 +334,7 @@ def import_from_csv(csv_content):
 
 # =====================================================================
 # 3a) محرك الاسترجاع الدلالي من المراجع المرفوعة (RAG)
-#     الفكرة: يرفع المشرف نصوص مراجع فعلية يملك حقوق استخدامها. تُقسَّم
-#     إلى مقاطع صغيرة، ويُحسب لكل مقطع تمثيل رقمي (embedding) مرة واحدة
-#     عند الرفع ويُخزَّن. عند كل سؤال، يُحسب تمثيل السؤال فقط (سريع جداً)
-#     وتُقارن به كل المقاطع المخزّنة رياضياً (تشابه جيب التمام) لإيجاد
-#     الأقرب دلالياً في أجزاء من الثانية، ثم تُمرَّر تلك المقاطع فقط
-#     للذكاء الاصطناعي ليبني إجابته عليها ويستشهد بمصدرها — بدل توليد
-#     إجابة من الذاكرة العامة للنموذج.
 # =====================================================================
-import numpy as np
-
 EMBED_MODEL = "models/text-embedding-004"
 
 def chunk_text(text, max_chars=700, overlap=100):
@@ -343,7 +350,6 @@ def chunk_text(text, max_chars=700, overlap=100):
     return [c for c in chunks if len(c) > 30]
 
 def embed_texts(texts, task_type="retrieval_document"):
-    """يُرجع قائمة متجهات embedding لكل نص، أو None إن تعذّر (لا مفتاح/لا مكتبة)."""
     if not USE_GEMINI or not texts:
         return None
     try:
@@ -356,7 +362,6 @@ def embed_texts(texts, task_type="retrieval_document"):
         return None
 
 def add_reference_document(title, madhab_tag, raw_text):
-    """يقسّم نصاً مرجعياً إلى مقاطع، يحسب embedding لكل مقطع، ويخزّنها. يُرجع عدد المقاطع المضافة أو -1 عند الفشل."""
     chunks = chunk_text(raw_text)
     if not chunks:
         return 0
@@ -365,7 +370,6 @@ def add_reference_document(title, madhab_tag, raw_text):
         return -1
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    import datetime
     now = datetime.datetime.utcnow().isoformat()
     for chunk, vec in zip(chunks, vectors):
         c.execute(
@@ -377,25 +381,28 @@ def add_reference_document(title, madhab_tag, raw_text):
     return len(chunks)
 
 def count_reference_chunks():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM reference_chunks")
-    n = c.fetchone()[0]
-    conn.close()
-    return n
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT COUNT(*) FROM reference_chunks")
+        n = c.fetchone()[0]
+        conn.close()
+        return n
+    except sqlite3.OperationalError:
+        return 0
 
 def list_reference_sources():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT source_title, COUNT(*) FROM reference_chunks GROUP BY source_title")
-    rows = c.fetchall()
-    conn.close()
-    return rows
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT source_title, COUNT(*) FROM reference_chunks GROUP BY source_title")
+        rows = c.fetchall()
+        conn.close()
+        return rows
+    except sqlite3.OperationalError:
+        return []
 
 def retrieve_relevant_chunks(query, top_k=5, min_similarity=0.55):
-    """يسترجع أقرب المقاطع دلالياً لسؤال المستخدم خلال أجزاء من الثانية
-    (تشابه جيب التمام على متجهات محسوبة مسبقاً)، أو [] إن لم تتوفر مراجع
-    أو تعذّر حساب تمثيل السؤال."""
     total = count_reference_chunks()
     if total == 0:
         return []
@@ -422,10 +429,6 @@ def retrieve_relevant_chunks(query, top_k=5, min_similarity=0.55):
     return scored[:top_k]
 
 def rag_generate_answer(question, lang, madhab_codes, level, T):
-    """يبني إجابة بالاستناد الحصري إلى المقاطع المسترجعة من المراجع
-    المرفوعة، مع الاستشهاد بعنوان المصدر لكل مذهب. يُرجع None إن لم
-    توجد مقاطع ذات صلة كافية (فيتحول البحث تلقائياً لطبقة التوليد
-    الحر التالية)."""
     if not USE_GEMINI:
         return None
     chunks = retrieve_relevant_chunks(question, top_k=6)
@@ -477,7 +480,7 @@ def rag_generate_answer(question, lang, madhab_codes, level, T):
         return None
 
 # =====================================================================
-# 3b) SEMANTIC SEARCH ضمن قاعدة البيانات (GEMINI)
+# 3b) SEMANTIC SEARCH ضمن قاعدة البيانات
 # =====================================================================
 def semantic_search(query, issues, lang):
     if not USE_GEMINI or not issues:
@@ -504,10 +507,7 @@ def semantic_search(query, issues, lang):
         return None
 
 # =====================================================================
-# 3b) توليد إجابة حرة بالذكاء الاصطناعي عندما لا توجد مسألة مطابقة في
-#     قاعدة البيانات الموثقة. هذه الإجابات تُعرض دائماً موسومة بوضوح
-#     كمحتوى غير مُراجَع من عالم شرعي — وليست بديلاً عن قاعدة البيانات،
-#     بل حل احتياطي فقط عند عدم وجود تطابق.
+# 4) توليد إجابة حرة بالذكاء الاصطناعي (حل أخير)
 # =====================================================================
 def ai_generate_answer(question, lang, madhab_codes, level, T):
     if not USE_GEMINI or not madhab_codes:
@@ -555,7 +555,7 @@ def ai_generate_answer(question, lang, madhab_codes, level, T):
         return None
 
 # =====================================================================
-# 4) SEARCH LOGIC (قاعدة البيانات الموثقة فقط)
+# 5) SEARCH LOGIC (قاعدة البيانات الموثقة فقط)
 # =====================================================================
 def search_issues(query, topic_filter, madhabs, level, lang, T, MADHHAB_NAMES, TOPICS):
     if not query:
@@ -617,7 +617,7 @@ def search_issues(query, topic_filter, madhabs, level, lang, T, MADHHAB_NAMES, T
     return final_results
 
 # =====================================================================
-# 5) UI DATA (Translations, Madhhabs, etc.)
+# 6) UI DATA (Translations, Madhhabs, etc.)
 # =====================================================================
 LANGS = {"العربية": "ar", "English": "en", "Français": "fr", "فارسی": "fa", "Bahasa Melayu": "ms", "اردو": "ur"}
 
@@ -1052,6 +1052,7 @@ COUNTRIES = [
 # =====================================================================
 def main():
     init_db()
+    ensure_reference_table()  # ✅ تأكد من وجود الأعمدة المطلوبة
     seed_initial_issues()
 
     if "lang" not in st.session_state:
@@ -1132,21 +1133,12 @@ def main():
         <svg width="88" height="88" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <circle cx="60" cy="60" r="56" fill="#0f231c" stroke="#d4a854" stroke-width="3"/>
             <circle cx="60" cy="60" r="49" fill="none" stroke="#d4a854" stroke-width="0.75" opacity="0.5"/>
-
-            <!-- هلال -->
             <path d="M78 20 A15 15 0 1 0 81 47 A11.5 11.5 0 1 1 78 20 Z" fill="#d4a854"/>
-
-            <!-- كتاب مفتوح -->
-            <path d="M60 50 C46 43 32 45 25 52 V90 C32 83 46 81 60 88 C74 81 88 83 95 90 V52 C88 45 74 43 60 50 Z"
-                  fill="none" stroke="#f2e6c9" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M60 50 C46 43 32 45 25 52 V90 C32 83 46 81 60 88 C74 81 88 83 95 90 V52 C88 45 74 43 60 50 Z" fill="none" stroke="#f2e6c9" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
             <line x1="60" y1="50" x2="60" y2="88" stroke="#f2e6c9" stroke-width="3"/>
-
-            <!-- سطور الصفحة اليسرى -->
             <path d="M32 59 Q46 55 58 59" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
             <path d="M32 67 Q46 63 58 67" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
             <path d="M32 75 Q46 71 58 75" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
-
-            <!-- سطور الصفحة اليمنى -->
             <path d="M62 59 Q74 55 88 59" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
             <path d="M62 67 Q74 63 88 67" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
             <path d="M62 75 Q74 71 88 75" stroke="#f2e6c9" stroke-width="1.4" fill="none" opacity="0.65"/>
@@ -1177,11 +1169,7 @@ def main():
             except Exception as e:
                 st.error(f"❌ خطأ: {e}")
 
-    # -------------------------------------------------------------
-    # لوحة إدارة المراجع (RAG) — يرفع المشرف نصوصاً مرجعية فعلية،
-    # يفهرسها النظام دلالياً لتُستخدم كأساس للإجابات المبنية على
-    # مراجع بدل التوليد الحر بالذكاء الاصطناعي.
-    # -------------------------------------------------------------
+    # RAG إدارة المراجع
     with st.expander(T["rag_expander"]):
         if not USE_GEMINI:
             st.warning(T["ai_unavailable"])
@@ -1277,13 +1265,6 @@ def main():
         ai_used = False
         rag_used = False
 
-        # -------------------------------------------------------------
-        # طبقات الإجابة بالترتيب:
-        # 1) قاعدة البيانات الموثقة (search_issues أعلاه)
-        # 2) استرجاع دلالي من المراجع المرفوعة (RAG) — إن وُجدت مراجع
-        #    مفهرسة ذات صلة كافية بالسؤال
-        # 3) توليد حر بالذكاء الاصطناعي كحل أخير — موسوم بوضوح كغير مُراجَع
-        # -------------------------------------------------------------
         if not results and USE_GEMINI:
             with st.spinner(T["ai_generating"]):
                 rag_cards = rag_generate_answer(question, lang, selected_madhabs, level, T)
