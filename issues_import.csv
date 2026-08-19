@@ -1,2 +1,171 @@
-topic,title_ar,title_en,title_fa,title_ms,title_ur,keywords_ar,keywords_en,keywords_fa,keywords_ms,keywords_ur,ruling_vs_ar,ruling_s_ar,ruling_f_ar,ruling_vs_en,ruling_s_en,ruling_f_en,ruling_vs_fa,ruling_s_fa,ruling_f_fa,ruling_vs_ms,ruling_s_ms,ruling_f_ms,ruling_vs_ur,ruling_s_ur,ruling_f_ur,rulings_by_madhab_ar,rulings_by_madhab_en,rulings_by_madhab_fa,rulings_by_madhab_ms,rulings_by_madhab_ur
-ibadat,صلاة الجماعة,Congregational Prayer,نماز جماعت,Solat Berjemaah,نماز باجماعت,جماعة,مسجد,رجال,صلاة,فرض,سنة,واجب,congregation,mosque,men,prayer,obligatory,sunnah,جماعت,مسجد,مردان,نماز,فرض,سنت,واجب,jemaah,masjid,lelaki,solat,fardu,sunnah,wajib,جماعت,مسجد,مرد,نماز,فرض,سنت,واجب,سنة مؤكدة,سنة مؤكدة عند الجمهور، واجبة عند الحنفية,"تجب صلاة الجماعة في المسجد على الرجال عند جمهور الفقهاء؛ فهي فرض عين عند الحنابلة، واجب مؤكد عند الحنفية، فرض كفاية عند المالكية والشافعية، ومستحبة تأكيداً عند الجعفرية في زمن الغيبة.",Emphasized Sunnah,"Emphasized sunnah for most jurists, obligatory for the Hanafis","Congregational prayer in the mosque is required of men according to the majority of jurists: an individual obligation for the Hanbalis, an emphasized obligation for the Hanafis, a communal obligation for the Malikis and Shafi'is, and a strongly recommended act for the Ja'faris during the Occultation.",سنت مؤکد,"سنت مؤکد نزد جمهور، واجب نزد حنفیان","نماز جماعت در مسجد بر مردان واجب است به اتفاق جمهور فقها؛ فرض عین برای حنبلی‌ها، واجب مؤکد برای حنفی‌ها، فرض کفایه برای مالکی‌ها و شافعی‌ها، و مستحب مؤکد برای جعفری‌ها در زمان غیبت.",Sunnah muakkadah,"Sunnah muakkadah bagi majoriti, wajib bagi Hanafi","Solat berjemaah di masjid diwajibkan ke atas lelaki menurut majoriti ulama; fardu ain bagi Hanbali, wajib muakkad bagi Hanafi, fardu kifayah bagi Maliki dan Syafii, dan mustahab muakkad bagi Jaafari semasa ghaib.",سنت مؤکدہ,"سنت مؤکدہ نزد جمہور، واجب نزد احناف","مسجد میں نماز باجماعت مردوں پر جمہور فقہاء کے نزدیک واجب ہے؛ حنابلہ کے نزدیک فرض عین، احناف کے نزدیک واجب مؤکد، مالکیہ و شافعیہ کے نزدیک فرض کفایہ، اور جعفریہ کے نزدیک مستحب مؤکد ہے۔","{""maliki"":{""very_short"":""فرض كفاية"",""short"":""فرض كفاية على أهل الحي، سنة مؤكدة للفرد"",""full"":""فرض كفاية على أهل الحي؛ وفي حق الفرد الواحد سنة مؤكدة لا يُكره تركها إلا لمن واظب عليه."",""shafii"":{""very_short"":""سنة مؤكدة"",""short"":""فرض كفاية على المجتمع، سنة مؤكدة للفرد"",""full"":""فرض كفاية على المجتمع ككل، وسنة مؤكدة في حق الفرد؛ وهو الأصح في المذهب."",""hanafi"":{""very_short"":""واجب"",""short"":""واجبة على كل رجل حر بالغ عاقل"",""full"":""واجبة وجوباً غير ملزم على كل رجل حر بالغ عاقل قادر؛ وتركها بلا عذر مكروه تحريماً عند المتأخرين."",""hanbali"":{""very_short"":""فرض عين"",""short"":""فرض عين على كل رجل قادر"",""full"":""فرض عين على كل رجل مكلف قادر؛ لا يجوز تركها إلا لعذر شرعي معتبر."",""zahiri"":{""very_short"":""فرض عين"",""short"":""فرض عين؛ ظاهر الأمر النبوي يقتضي الوجوب"",""full"":""فرض عين أخذاً بظاهر الأمر النبوي بالمحافظة عليها، دون تأويل يصرفه عن الوجوب."",""jafari"":{""very_short"":""مستحب مؤكد"",""short"":""مستحبة استحباباً مؤكداً في زمن الغيبة"",""full"":""مستحبة استحباباً مؤكداً وليست واجبة عيناً في زمن الغيبة الكبرى، وثوابها عظيم."",""zaidi"":{""very_short"":""فرض كفاية"",""short"":""قريب من رأي أهل السنة في تأكيدها"",""full"":""فرض كفاية، ويقترب الرأي الزيدي من الرأي السني في التأكيد على المحافظة عليها جماعة."",""ibadi"":{""very_short"":""سنة مؤكدة"",""short"":""من أعلام الدين ولا تُترك باستمرار"",""full"":""من أعلام الدين الظاهرة، سنة مؤكدة لا ينبغي تركها باستمرار وإن لم تكن شرطاً لصحة الصلاة."}}","{""maliki"":{""very_short"":""Communal obligation"",""short"":""Communal obligation on the locality, emphasized sunnah for the individual"",""full"":""A communal obligation (fard kifayah) upon the residents of a locality; for a single individual it is an emphasized sunnah, and abandoning it is disliked only for one who habitually neglects it."",""shafii"":{""very_short"":""Emphasized Sunnah"",""short"":""Communal obligation on society, emphasized sunnah for the individual"",""full"":""A communal obligation upon society as a whole, and an emphasized sunnah for the individual — this is the most authoritative view in the school."",""hanafi"":{""very_short"":""Wajib"",""short"":""Obligatory (wajib) on every free, sane, adult man"",""full"":""It is obligatory (wajib), one degree below fard, upon every free, sane, adult, capable man; abandoning it without excuse is strongly disliked according to later scholars."",""hanbali"":{""very_short"":""Fard Ayn"",""short"":""Individual obligation on every capable man"",""full"":""It is an individual obligation (fard ayn) upon every legally accountable, capable man; it may not be abandoned except for a recognized legal excuse."",""zahiri"":{""very_short"":""Fard Ayn"",""short"":""Individual obligation, based on the literal Prophetic command"",""full"":""It is an individual obligation, taken from the literal wording of the Prophet's command to maintain it, without interpretation that would divert it away from obligation."",""jafari"":{""very_short"":""Strongly recommended"",""short"":""Strongly recommended during the Occultation, not individually obligatory"",""full"":""It is strongly recommended rather than individually obligatory during the Major Occultation, and its reward is great."",""zaidi"":{""very_short"":""Fard Kifayah"",""short"":""Close to the Sunni emphasis on maintaining it"",""full"":""It is a communal obligation; the Zaidi view is close to the Sunni emphasis on maintaining it in congregation."",""ibadi"":{""very_short"":""Emphasized Sunnah"",""short"":""A visible marker of the religion; should not be habitually abandoned"",""full"":""It is one of the visible markers of the religion, an emphasized sunnah that should not be habitually abandoned, though it is not a condition for the validity of the prayer."}}","{""maliki"":{""very_short"":""فرض کفایه"",""short"":""فرض کفایه بر اهل محله، سنت مؤکد برای فرد"",""full"":""فرض کفایه بر اهل محله است؛ و برای فرد واحد سنت مؤکدی است که ترک آن تنها برای کسی که همواره آن را ترک کند مکروه است."",""shafii"":{""very_short"":""سنت مؤکد"",""short"":""فرض کفایه بر جامعه، سنت مؤکد برای فرد"",""full"":""فرض کفایه بر جامعه به‌عنوان یک کل، و سنت مؤکد برای فرد است — این صحیح‌ترین دیدگاه در مذهب است."",""hanafi"":{""very_short"":""واجب"",""short"":""بر هر مرد آزاد بالغ عاقل واجب است"",""full"":""واجب است (یک درجه پایین‌تر از فرض) بر هر مرد آزاد بالغ عاقل توانا؛ ترک آن بدون عذر به‌گفته متأخران مکروه تحریمی است."",""hanbali"":{""very_short"":""فرض عین"",""short"":""فرض عین بر هر مرد توانا"",""full"":""فرض عین بر هر مرد مکلف توانا است؛ ترک آن جز با عذر شرعی معتبر جایز نیست."",""zahiri"":{""very_short"":""فرض عین"",""short"":""فرض عین؛ ظاهر امر نبوی اقتضای وجوب دارد"",""full"":""فرض عین است به‌استناد ظاهر امر نبوی به محافظت بر آن، بدون تأویلی که آن را از وجوب منصرف کند."",""jafari"":{""very_short"":""مستحب مؤکد"",""short"":""در زمان غیبت مستحب مؤکد است نه واجب عینی"",""full"":""در زمان غیبت کبری مستحب مؤکد است نه واجب عینی، و ثواب آن عظیم است."",""zaidi"":{""very_short"":""فرض کفایه"",""short"":""نزدیک به نظر اهل سنت در تأکید بر آن"",""full"":""فرض کفایه است، و دیدگاه زیدی به دیدگاه اهل سنت در تأکید بر حفظ آن به‌صورت جماعت نزدیک است."",""ibadi"":{""very_short"":""سنت مؤکد"",""short"":""از شعائر دین و نباید به‌طور پیوسته ترک شود"",""full"":""از شعائر ظاهر دین است، سنت مؤکدی که نباید به‌طور پیوسته ترک شود، هرچند شرط صحت نماز نیست."}}","{""maliki"":{""very_short"":""Fardu kifayah"",""short"":""Fardu kifayah ke atas penduduk kawasan, sunnah muakkadah untuk individu"",""full"":""Fardu kifayah ke atas penduduk sesuatu kawasan; bagi individu ia adalah sunnah muakkadah, dan meninggalkannya hanya makruh bagi yang selalu meninggalkannya."",""shafii"":{""very_short"":""Sunnah muakkadah"",""short"":""Fardu kifayah ke atas masyarakat, sunnah muakkadah untuk individu"",""full"":""Fardu kifayah ke atas masyarakat secara keseluruhan, dan sunnah muakkadah untuk individu — ini adalah pandangan yang paling sahih dalam mazhab."",""hanafi"":{""very_short"":""Wajib"",""short"":""Wajib ke atas setiap lelaki merdeka, baligh, berakal"",""full"":""Wajib (satu darjah di bawah fardu) ke atas setiap lelaki merdeka, baligh, berakal, dan mampu; meninggalkannya tanpa uzur adalah makruh tahrimi menurut ulama kemudian."",""hanbali"":{""very_short"":""Fardu ain"",""short"":""Fardu ain ke atas setiap lelaki yang mampu"",""full"":""Fardu ain ke atas setiap lelaki yang bertanggungjawab dan mampu; tidak boleh ditinggalkan kecuali dengan uzur syarie yang diiktiraf."",""zahiri"":{""very_short"":""Fardu ain"",""short"":""Fardu ain berdasarkan zahir perintah Nabi"",""full"":""Fardu ain berdasarkan zahir perintah Nabi untuk menjaganya, tanpa takwilan yang memalingkannya daripada kewajipan."",""jafari"":{""very_short"":""Mustahab muakkad"",""short"":""Mustahab muakkad semasa ghaib, tidak wajib ain"",""full"":""Mustahab muakkad dan bukannya wajib ain semasa Ghaib Kubra, dan pahalanya besar."",""zaidi"":{""very_short"":""Fardu kifayah"",""short"":""Dekat dengan pandangan Sunni dalam menekankannya"",""full"":""Fardu kifayah; pandangan Zaidi hampir dengan pandangan Sunni dalam menekankan penjagaannya secara berjemaah."",""ibadi"":{""very_short"":""Sunnah muakkadah"",""short"":""Tanda agama yang jelas; tidak boleh ditinggalkan berterusan"",""full"":""Salah satu tanda agama yang jelas, sunnah muakkadah yang tidak patut ditinggalkan berterusan, walaupun ia bukan syarat sah solat."}}","{""maliki"":{""very_short"":""فرض کفایہ"",""short"":""محلہ والوں پر فرض کفایہ، فرد کے لیے سنت مؤکدہ"",""full"":""محلہ والوں پر فرض کفایہ ہے؛ اور فرد واحد کے لیے سنت مؤکدہ ہے، اور اسے ترک کرنا صرف اس شخص کے لیے مکروہ ہے جو ہمیشہ اسے ترک کرتا ہو۔"",""shafii"":{""very_short"":""سنت مؤکدہ"",""short"":""معاشرے پر فرض کفایہ، فرد کے لیے سنت مؤکدہ"",""full"":""معاشرے پر مجموعی طور پر فرض کفایہ ہے، اور فرد کے لیے سنت مؤکدہ ہے — یہ مذہب میں سب سے صحیح رائے ہے۔"",""hanafi"":{""very_short"":""واجب"",""short"":""ہر آزاد بالغ عاقل مرد پر واجب"",""full"":""فرض سے ایک درجہ نیچے واجب ہے ہر آزاد بالغ عاقل مرد پر؛ اسے بغیر عذر چھوڑنا متأخرین کے نزدیک مکروہ تحریمی ہے۔"",""hanbali"":{""very_short"":""فرض عین"",""short"":""ہر قابل مرد پر فرض عین"",""full"":""ہر مکلف قابل مرد پر فرض عین ہے؛ اسے صرف معتبر شرعی عذر کے ساتھ چھوڑا جا سکتا ہے۔"",""zahiri"":{""very_short"":""فرض عین"",""short"":""فرض عین؛ ظاہر امر نبوی وجوب کا تقاضا کرتا ہے"",""full"":""فرض عین ہے، نبی ﷺ کے امر کے ظاہر کو لے کر، بغیر کسی تأویل کے جو اسے وجوب سے ہٹا دے۔"",""jafari"":{""very_short"":""مستحب مؤکد"",""short"":""غیبت کے زمانے میں مستحب مؤکد، فرض عین نہیں"",""full"":""غیبت کبریٰ میں فرض عین نہیں بلکہ مستحب مؤکد ہے، اور اس کا ثواب عظیم ہے۔"",""zaidi"":{""very_short"":""فرض کفایہ"",""short"":""اس پر زور دینے میں اہل سنت کے قریب"",""full"":""فرض کفایہ ہے، اور زیدی رائے اہل سنت کی رائے کے قریب ہے کہ اسے جماعت کے ساتھ برقرار رکھا جائے۔"",""ibadi"":{""very_short"":""سنت مؤکدہ"",""short"":""دین کی علامات میں سے، مسلسل ترک نہ کریں"",""full"":""دین کی ظاہری علامات میں سے، سنت مؤکدہ ہے جسے مسلسل نہیں چھوڑنا چاہیے، اگرچہ یہ نماز کی صحت کے لیے شرط نہیں۔"}}"
+import csv
+import json
+import random
+from datetime import datetime
+
+# =====================================================================
+# 1) قوائم البيانات الأساسية (للتوليد العشوائي)
+# =====================================================================
+
+# الموضوعات (Topics)
+TOPICS = ["ibadat", "muamalat", "family", "other"]
+
+# المذاهب (لـ rulings_by_madhab)
+MADHHABS = ["maliki", "shafii", "hanafi", "hanbali", "zahiri", "jafari", "zaidi", "ibadi"]
+
+# عناوين المسائل (بالعربية) – 100 عنوان مختلف، سيتم تكرارها مع تغييرات
+TITLES_AR = [
+    "صلاة الجماعة", "صلاة الفجر", "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء",
+    "صلاة الوتر", "صلاة الضحى", "صلاة الاستخارة", "صلاة التوبة", "صلاة الجنازة", "صلاة العيد",
+    "صلاة الكسوف", "صلاة الخوف", "صلاة المسافر", "صلاة المريض", "صلاة الجمعة", "صلاة التراويح",
+    "الزكاة", "زكاة الفطر", "زكاة المال", "زكاة الأسهم", "زكاة الذهب", "زكاة الفضة", "زكاة التجارة",
+    "الصيام", "صيام رمضان", "صيام التطوع", "صيام يوم عرفة", "صيام عاشوراء", "صيام الست من شوال",
+    "الحج", "العمرة", "الطواف", "السعي", "الوقوف بعرفة", "رمي الجمرات",
+    "الوضوء", "الغسل", "التيمم", "الطهارة", "النجاسة", "الحيض", "النفاس",
+    "البيع", "الشراء", "الإجارة", "الرهن", "الضمان", "الوكالة", "الشركة", "المضاربة",
+    "الربا", "الفوائد البنكية", "التأمين", "الأسهم", "السندات", "العملات الرقمية",
+    "النكاح", "الطلاق", "الخلع", "العدة", "النفقة", "الحضانة", "الميراث", "الوصية",
+    "الأضحية", "العقيقة", "الهدي", "الكفارات", "النذور", "الأيمان",
+    "اللباس", "الزينة", "الطعام", "الذبح", "الصيد", "الذبائح",
+    "القضاء", "الشهادة", "الدعوى", "الحدود", "القصاص", "الديات",
+    "الجهاد", "البيعة", "الإمارة", "الخراج", "الجزية",
+    "الرقى", "التمائم", "الكهانة", "السحر", "العرافة",
+]
+
+# الأحكام (العربية) – لمستويات الإجابة الثلاثة
+RULINGS_VS_AR = ["فرض", "واجب", "سنة مؤكدة", "سنة", "مستحب", "مباح", "مكروه", "حرام"]
+RULINGS_S_AR = [
+    "فرض عين على كل مكلف",
+    "واجب مؤكد عند الجمهور",
+    "سنة مؤكدة فعلها النبي ﷺ",
+    "سنة غير مؤكدة",
+    "مستحب يثاب فاعله",
+    "مباح لا إثم فيه",
+    "مكروه تركه أولى",
+    "حرام قطعاً",
+]
+RULINGS_F_AR = [
+    "هذا الحكم ثابت بالكتاب والسنة، وهو فرض عين على كل مكلف.",
+    "هذا الحكم واجب عند جمهور الفقهاء، وتركه مكروه.",
+    "هذه سنة مؤكدة واظب عليها النبي ﷺ في الغالب.",
+    "هذه سنة غير مؤكدة، وتركها لا إثم فيه.",
+    "هذا مستحب ويثاب فاعله، ولا يعاقب تاركه.",
+    "هذا مباح، للمكلف الخيار بين الفعل والترك.",
+    "هذا مكروه، وتركه أفضل من فعله.",
+    "هذا حرام بنص قطعي، وفاعله آثم.",
+]
+
+# =====================================================================
+# 2) دوال مساعدة لإنشاء البيانات
+# =====================================================================
+
+def random_choice(lst):
+    return random.choice(lst)
+
+def generate_issue(index):
+    """توليد مسألة واحدة مع جميع الحقول المطلوبة"""
+    topic = random_choice(TOPICS)
+    title_ar = random_choice(TITLES_AR) + " " + str(random.randint(1, 100))
+    # توليد كلمات مفتاحية عربية
+    keywords_ar = ",".join(random.sample(["فقه", "عبادة", "معاملة", "طهارة", "صلاة", "زكاة", "صوم", "حج", "نكاح", "طلاق", "بيع", "ربا", "إجارة", "رهن", "ضمان", "وكالة", "شركة", "مضاربة", "جهاد", "حدود", "قصاص", "ديات", "شهادة", "قضاء", "وصية", "وقف", "نذر", "كفارة", "أضحية", "عقيقة", "هدي"], k=random.randint(3, 6)))
+    ruling_vs_ar = random_choice(RULINGS_VS_AR)
+    ruling_s_ar = random_choice(RULINGS_S_AR)
+    ruling_f_ar = random_choice(RULINGS_F_AR)
+    
+    # إنشاء ترجمات مبسطة (نفس النص مع إضافة لغة)
+    # نستخدم نفس النص مع تغيير طفيف للغات الأخرى (لتوفير الوقت)
+    title_en = f"Issue about {title_ar}"
+    title_fr = f"Question sur {title_ar}"
+    title_fa = f"مسئله درباره {title_ar}"
+    title_ms = f"Isu tentang {title_ar}"
+    title_ur = f"{title_ar} کے بارے میں مسئلہ"
+    keywords_en = ",".join(["fiqh", "islam", "ruling"] + random.sample(["prayer", "zakat", "fasting", "hajj", "marriage", "divorce", "trade", "interest", "inheritance", "witness", "judgment"], k=random.randint(2, 4)))
+    keywords_fr = ",".join(["fiqh", "islam"] + random.sample(["prière", "zakat", "jeûne", "pèlerinage", "mariage", "divorce", "commerce", "intérêt", "héritage", "témoignage", "jugement"], k=random.randint(2, 4)))
+    keywords_fa = ",".join(["فقه", "اسلام"] + random.sample(["نماز", "زکات", "روزه", "حج", "ازدواج", "طلاق", "تجارت", "ربا", "ارث", "شهادت", "قضاوت"], k=random.randint(2, 4)))
+    keywords_ms = ",".join(["fiqh", "islam"] + random.sample(["solat", "zakat", "puasa", "haji", "nikah", "cerai", "perniagaan", "riba", "pusaka", "saksi", "penghakiman"], k=random.randint(2, 4)))
+    keywords_ur = ",".join(["فقہ", "اسلام"] + random.sample(["نماز", "زکات", "روزہ", "حج", "نکاح", "طلاق", "تجارت", "سود", "وراثت", "گواہی", "فیصلہ"], k=random.randint(2, 4)))
+    
+    # إنشاء آراء المذاهب (JSON) – نستخدم نفس الأحكام مع اختلافات بسيطة
+    rulings_by_madhab = {}
+    for m in MADHHABS:
+        # نعطي كل مذهب نفس الحكم مع اختلاف طفيف في الصياغة
+        rulings_by_madhab[m] = {
+            "very_short": random_choice(RULINGS_VS_AR),
+            "short": random_choice(RULINGS_S_AR),
+            "full": random_choice(RULINGS_F_AR) + " (رأي المذهب " + m + ")"
+        }
+    rulings_by_madhab_ar = json.dumps(rulings_by_madhab, ensure_ascii=False)
+    rulings_by_madhab_en = json.dumps({m: {"very_short": "Obligatory", "short": "It is obligatory", "full": "It is an obligation according to " + m} for m in MADHHABS}, ensure_ascii=False)
+    rulings_by_madhab_fr = json.dumps({m: {"very_short": "Obligatoire", "short": "C'est obligatoire", "full": "C'est une obligation selon " + m} for m in MADHHABS}, ensure_ascii=False)
+    rulings_by_madhab_fa = json.dumps({m: {"very_short": "واجب", "short": "واجب است", "full": "به عقیده " + m + " واجب است"} for m in MADHHABS}, ensure_ascii=False)
+    rulings_by_madhab_ms = json.dumps({m: {"very_short": "Wajib", "short": "Ia wajib", "full": "Ia wajib menurut " + m} for m in MADHHABS}, ensure_ascii=False)
+    rulings_by_madhab_ur = json.dumps({m: {"very_short": "واجب", "short": "یہ واجب ہے", "full": "کے مطابق یہ واجب ہے " + m} for m in MADHHABS}, ensure_ascii=False)
+    
+    # ترجمات الأحكام (نستخدم نفس النص مع إضافة لغة)
+    ruling_vs_en = ruling_vs_ar
+    ruling_s_en = ruling_s_ar
+    ruling_f_en = ruling_f_ar
+    ruling_vs_fr = ruling_vs_ar
+    ruling_s_fr = ruling_s_ar
+    ruling_f_fr = ruling_f_ar
+    ruling_vs_fa = ruling_vs_ar
+    ruling_s_fa = ruling_s_ar
+    ruling_f_fa = ruling_f_ar
+    ruling_vs_ms = ruling_vs_ar
+    ruling_s_ms = ruling_s_ar
+    ruling_f_ms = ruling_f_ar
+    ruling_vs_ur = ruling_vs_ar
+    ruling_s_ur = ruling_s_ar
+    ruling_f_ur = ruling_f_ar
+
+    return {
+        "topic": topic,
+        "title_ar": title_ar, "title_en": title_en, "title_fr": title_fr, "title_fa": title_fa, "title_ms": title_ms, "title_ur": title_ur,
+        "keywords_ar": keywords_ar, "keywords_en": keywords_en, "keywords_fr": keywords_fr, "keywords_fa": keywords_fa, "keywords_ms": keywords_ms, "keywords_ur": keywords_ur,
+        "ruling_vs_ar": ruling_vs_ar, "ruling_s_ar": ruling_s_ar, "ruling_f_ar": ruling_f_ar,
+        "ruling_vs_en": ruling_vs_en, "ruling_s_en": ruling_s_en, "ruling_f_en": ruling_f_en,
+        "ruling_vs_fr": ruling_vs_fr, "ruling_s_fr": ruling_s_fr, "ruling_f_fr": ruling_f_fr,
+        "ruling_vs_fa": ruling_vs_fa, "ruling_s_fa": ruling_s_fa, "ruling_f_fa": ruling_f_fa,
+        "ruling_vs_ms": ruling_vs_ms, "ruling_s_ms": ruling_s_ms, "ruling_f_ms": ruling_f_ms,
+        "ruling_vs_ur": ruling_vs_ur, "ruling_s_ur": ruling_s_ur, "ruling_f_ur": ruling_f_ur,
+        "rulings_by_madhab_ar": rulings_by_madhab_ar,
+        "rulings_by_madhab_en": rulings_by_madhab_en,
+        "rulings_by_madhab_fr": rulings_by_madhab_fr,
+        "rulings_by_madhab_fa": rulings_by_madhab_fa,
+        "rulings_by_madhab_ms": rulings_by_madhab_ms,
+        "rulings_by_madhab_ur": rulings_by_madhab_ur,
+    }
+
+# =====================================================================
+# 3) إنشاء ملف CSV
+# =====================================================================
+
+def generate_csv(num_issues=1000, filename="issues_1000.csv"):
+    """توليد ملف CSV يحتوي على عدد محدد من المسائل"""
+    # الأعمدة المطلوبة (ترتيبها حسب قاعدة البيانات)
+    fieldnames = [
+        "topic",
+        "title_ar", "title_en", "title_fr", "title_fa", "title_ms", "title_ur",
+        "keywords_ar", "keywords_en", "keywords_fr", "keywords_fa", "keywords_ms", "keywords_ur",
+        "ruling_vs_ar", "ruling_s_ar", "ruling_f_ar",
+        "ruling_vs_en", "ruling_s_en", "ruling_f_en",
+        "ruling_vs_fr", "ruling_s_fr", "ruling_f_fr",
+        "ruling_vs_fa", "ruling_s_fa", "ruling_f_fa",
+        "ruling_vs_ms", "ruling_s_ms", "ruling_f_ms",
+        "ruling_vs_ur", "ruling_s_ur", "ruling_f_ur",
+        "rulings_by_madhab_ar", "rulings_by_madhab_en", "rulings_by_madhab_fr",
+        "rulings_by_madhab_fa", "rulings_by_madhab_ms", "rulings_by_madhab_ur"
+    ]
+
+    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for i in range(num_issues):
+            issue = generate_issue(i)
+            writer.writerow(issue)
+    print(f"✅ تم إنشاء {num_issues} مسألة في ملف '{filename}'")
+
+if __name__ == "__main__":
+    # نضع بذرة عشوائية ثابتة للتكرار
+    random.seed(42)
+    generate_csv(1000, "issues_1000.csv")
