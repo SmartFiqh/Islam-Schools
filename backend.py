@@ -48,6 +48,11 @@ def pi_auth():
     return jsonify({'status': 'success', 'user': user_data})
 
 
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({'status': 'ok'})
+
+
 @app.route('/pi-user/<uid>', methods=['GET'])
 def get_user(uid):
     user = sessions.get(uid)
